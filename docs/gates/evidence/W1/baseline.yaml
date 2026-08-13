@@ -1,0 +1,59 @@
+work_package: W1
+title: "Stage 1A Simulator MVP and acceptance baseline"
+status: approved
+version: "1.0.0"
+scope:
+  phase: "Stage 1A"
+  mode: "simulator-only"
+  data: "synthetic-only"
+  environment: "non-production"
+baseline_commit: "bc1293ea0d909fe068d5fa14454f1934a61f7690"
+artifacts:
+  - id: "MVP-001@1.0.0"
+    path: "docs/product/MVP-001 阶段1A模拟器MVP范围.md"
+    digest_sha256: "24B88923C8835422D712D9311AA866AE791E21E7966A49397EF1DE80EB6526E5"
+  - id: "STORY-MAP-001@1.0.0"
+    path: "docs/product/STORY-MAP-001 阶段1A用户故事地图.md"
+    digest_sha256: "0A4D375DD43A4131C0ADD090C464C61BB86E382FAF93602060E954F36B044403"
+  - id: "ACCEPTANCE-001@1.0.0"
+    path: "docs/product/ACCEPTANCE-001 阶段1A验收矩阵.md"
+    digest_sha256: "79833ED45F20EFB1D681159CA8B79C62C61819D5611A2CC4F80CF1F6D91CF5FD"
+  - id: "DEMO-001@1.0.0"
+    path: "docs/product/DEMO-001 阶段1A合成数据演示脚本.md"
+    digest_sha256: "C76167AB78515407F10CA59ECAF8B0219429CA7328EAAD17B7A88BC8ACBFD87D"
+  - id: "PILOT-001@1.0.0"
+    path: "docs/product/PILOT-001 模拟器工程验证范围.md"
+    digest_sha256: "1FFB7321B458751F563D8DDE0EBADE63A5A0DF821D172DBA7BB794DE52F74383"
+classification:
+  p0_stories: 7
+  p1_stories: 1
+  out_stories: 11
+  p0_requirements: 12
+  acceptance_scenarios: 28
+  demo_steps: 16
+approval:
+  approved_at: "2026-08-13T00:00:00+08:00"
+  approval_record: "https://github.com/keyboardgdy/lemoo-ai-teaching-platform/issues/3#issuecomment-5278164835"
+  approved_by:
+    - name: "高端阳"
+      role: "Product Owner"
+    - name: "高端阳"
+      role: "QA/Acceptance Owner"
+  prepared_by:
+    name: "OpenAI Codex"
+    role: "AI Execution Agent; non-approver"
+blocked_capabilities:
+  - "real-device"
+  - "real-institution"
+  - "real-person-data"
+  - "production"
+  - "content"
+  - "teaching"
+  - "ai"
+  - "diagnostic"
+  - "bulk-command"
+  - "ota"
+gates:
+  g1_device: "blocked_no_physical_device"
+  simulator_implementation: "not_started"
+  hil: "not_applicable_stage_1a"

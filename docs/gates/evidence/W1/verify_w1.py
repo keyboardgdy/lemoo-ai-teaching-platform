@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import re
 import sys
 from dataclasses import dataclass
@@ -18,6 +19,7 @@ PATHS = {
     "STORY": PRODUCT / "STORY-MAP-001 阶段1A用户故事地图.md",
     "ACCEPTANCE": PRODUCT / "ACCEPTANCE-001 阶段1A验收矩阵.md",
     "DEMO": PRODUCT / "DEMO-001 阶段1A合成数据演示脚本.md",
+    "BASELINE": ROOT / "docs" / "gates" / "evidence" / "W1" / "baseline.yaml",
 }
 
 
@@ -79,6 +81,7 @@ def main() -> int:
     story = texts["STORY"]
     acceptance = texts["ACCEPTANCE"]
     demo = texts["DEMO"]
+    baseline = texts["BASELINE"]
 
     approved_status = "> 状态：Approved — Stage 1A Simulator-only"
     add_check(
@@ -107,6 +110,23 @@ def main() -> int:
         all(approved_version in text for text in (mvp, story, acceptance, demo, pilot))
         and all(approval_url in text for text in (mvp, story, acceptance, demo, pilot)),
         "All approved artifacts are versioned and reference the public approval record",
+    )
+    artifact_names = ["MVP", "STORY", "ACCEPTANCE", "DEMO", "PILOT"]
+    actual_digests = {
+        name: hashlib.sha256(PATHS[name].read_bytes()).hexdigest().upper()
+        for name in artifact_names
+    }
+    missing_digests = [
+        name for name, digest in actual_digests.items() if digest not in baseline
+    ]
+    add_check(
+        "W1-BASELINE-INTEGRITY",
+        "status: approved" in baseline
+        and 'version: "1.0.0"' in baseline
+        and 'baseline_commit: "bc1293ea0d909fe068d5fa14454f1934a61f7690"' in baseline
+        and approval_url in baseline
+        and not missing_digests,
+        f"baseline commit and artifact digests match; missing={','.join(missing_digests) or 'none'}",
     )
 
     prd_stories = unique_matches(r"^\| (ST-[A-Z]+-\d{3}) \|", prd)
