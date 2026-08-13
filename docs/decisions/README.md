@@ -4,7 +4,7 @@
 
 | ADR | Title | Status | Date |
 |---|---|---|---|
-| [ADR-001](ADR-001%20AI%20Provider适配器与Fake-first策略.md) | AI Provider Adapter 与 Fake-first | proposed | 2026-08-13 |
+| [ADR-001](ADR-001%20AI%20Provider适配器与Fake-first策略.md) | AI Provider Adapter 与 Fake-first | accepted | 2026-08-13 |
 
 ## 生命周期
 

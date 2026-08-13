@@ -2,9 +2,11 @@
 
 **Date**: 2026-08-13
 
-**Status**: proposed
+**Status**: accepted
 
-**Deciders**: 高端阳（Product/Security/Privacy Owner，待批准）；OpenAI Codex（提案编制，非批准人）
+**Deciders**: 高端阳（Product/Security/Privacy Owner，2026 年 8 月 13 日批准）；OpenAI Codex（提案编制，非批准人）
+
+**Approval record**: https://github.com/keyboardgdy/lemoo-ai-teaching-platform/issues/5#issuecomment-5278502909
 
 **GitHub Work Item**: [#5](https://github.com/keyboardgdy/lemoo-ai-teaching-platform/issues/5)
 

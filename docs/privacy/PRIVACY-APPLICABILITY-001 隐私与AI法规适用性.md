@@ -1,12 +1,14 @@
 # PRIVACY-APPLICABILITY-001：隐私、未成年人和 AI 法规适用性
 
-> 版本：0.1.0
+> 版本：1.0.0
 >
-> 状态：Proposed — Awaiting Security/Privacy Owner Approval
+> 状态：Approved — Stage 1A Engineering Boundary
 >
 > 日期：2026 年 8 月 13 日
 >
-> 安全/隐私 Owner：高端阳（待批准）
+> 安全/隐私 Owner：高端阳（2026 年 8 月 13 日批准）
+>
+> 批准记录：https://github.com/keyboardgdy/lemoo-ai-teaching-platform/issues/5#issuecomment-5278502909
 >
 > 执行编制：OpenAI Codex（工程分析，不构成法律意见）
 >

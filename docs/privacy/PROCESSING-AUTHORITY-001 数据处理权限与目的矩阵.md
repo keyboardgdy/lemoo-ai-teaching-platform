@@ -1,12 +1,14 @@
 # PROCESSING-AUTHORITY-001：数据处理权限与目的矩阵
 
-> 版本：0.1.0
+> 版本：1.0.0
 >
-> 状态：Proposed — Awaiting Security/Privacy Owner Approval
+> 状态：Approved — Stage 1A Engineering Boundary
 >
 > 日期：2026 年 8 月 13 日
 >
-> 安全/隐私 Owner：高端阳（待批准）
+> 安全/隐私 Owner：高端阳（2026 年 8 月 13 日批准）
+>
+> 批准记录：https://github.com/keyboardgdy/lemoo-ai-teaching-platform/issues/5#issuecomment-5278502909
 >
 > GitHub Work Item：[#5](https://github.com/keyboardgdy/lemoo-ai-teaching-platform/issues/5)
 >

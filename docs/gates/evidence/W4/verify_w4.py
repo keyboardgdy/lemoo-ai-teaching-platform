@@ -1,4 +1,4 @@
-"""Verify the proposed W4 security and privacy boundary package."""
+"""Verify the approved W4 security and privacy boundary package."""
 
 from __future__ import annotations
 
@@ -58,7 +58,7 @@ def print_result() -> int:
         print(f"W4_RESULT=FAIL; CHECKS={len(checks)}; FAILED={len(failed)}")
         return 1
 
-    print(f"W4_RESULT=PASS; CHECKS={len(checks)}; FAILED=0; APPROVAL=PENDING")
+    print(f"W4_RESULT=PASS; CHECKS={len(checks)}; FAILED=0; APPROVAL=APPROVED")
     return 0
 
 
@@ -82,20 +82,29 @@ def main() -> int:
         encoding="utf-8"
     )
 
-    candidate_docs = [threat, privacy, authority, data, content, approval, secrets]
-    proposed_status = "> 状态：Proposed — Awaiting Security/Privacy Owner Approval"
+    approved_docs = [threat, privacy, authority, data, content, approval, secrets]
+    approved_status = "> 状态：Approved — Stage 1A Engineering Boundary"
+    approval_record = (
+        "https://github.com/keyboardgdy/lemoo-ai-teaching-platform/"
+        "issues/5#issuecomment-5278502909"
+    )
     add_check(
         "W4-STATUS",
-        all(proposed_status in text for text in candidate_docs)
-        and "**Status**: proposed" in adr,
-        "All eight W4 artifacts remain proposed pending human approval",
+        all(
+            approved_status in text and "> 版本：1.0.0" in text
+            for text in approved_docs
+        )
+        and "**Status**: accepted" in adr,
+        "All eight W4 artifacts are approved/accepted at the Stage 1A boundary",
     )
     add_check(
         "W4-APPROVAL-BOUNDARY",
-        all("高端阳（待批准）" in text for text in (threat, privacy, authority, data))
+        all("2026 年 8 月 13 日批准" in text for text in approved_docs)
+        and approval_record in adr
+        and all(approval_record in text for text in approved_docs)
         and "OpenAI Codex（非批准人）" in threat
         and "不能用 OpenAI Codex 充当第二批准人" in approval,
-        "Named human approval and Codex non-approval boundaries are explicit",
+        "Human approval record and Codex non-approval boundaries are explicit",
     )
 
     threat_ids = unique_matches(r"^\| (THR-\d{3}) \|", threat)
@@ -217,7 +226,7 @@ def main() -> int:
         and "deterministic Fake" in adr
         and "真实网络 Provider、凭据和数据发送入口默认不存在" in adr
         and "业务层不得直接导入 Provider SDK" in adr,
-        f"AI capabilities={len(adr_capabilities)}, status=proposed",
+        f"AI capabilities={len(adr_capabilities)}, status=accepted",
     )
 
     requirement_ids = [
@@ -257,7 +266,7 @@ def main() -> int:
         ),
     )
 
-    all_w4 = "\n".join([*candidate_docs, adr, package])
+    all_w4 = "\n".join([*approved_docs, adr, package])
     boundaries = [
         "blocked_no_physical_device",
         "UNSET_BLOCKED",
