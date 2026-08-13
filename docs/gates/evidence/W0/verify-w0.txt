@@ -1,0 +1,41 @@
+﻿gate=Gate-0
+generated_at=2026-08-13T00:00:00+08:00
+command=powershell -NoProfile -ExecutionPolicy Bypass -File docs/gates/verify-w0.ps1
+workspace_commit=not_available_before_W2_git_initialization
+
+
+id                    status detail                                                            
+--                    ------ ------                                                            
+W0-FILE-PRD           PASS   D:\git\lemoo\docs\product\PRD-001 教育机器人云平台.md                     
+W0-FILE-RTM           PASS   D:\git\lemoo\docs\product\RTM-001 教育机器人云平台需求追踪矩阵.md               
+W0-FILE-PILOT         PASS   D:\git\lemoo\docs\product\PILOT-001 模拟器工程验证范围.md                  
+W0-FILE-OWNER         PASS   D:\git\lemoo\docs\governance\OWNER-001 责任人与AI执行授权.md              
+W0-FILE-BASELINES     PASS   D:\git\lemoo\docs\governance\BASELINE-REGISTRY.md                 
+W0-FILE-DECISIONS     PASS   D:\git\lemoo\docs\governance\DECISION-LOG.md                      
+W0-FILE-RISKS         PASS   D:\git\lemoo\docs\governance\RISK-REGISTER.md                     
+W0-FILE-STACK         PASS   D:\git\lemoo\docs\01 fastapi-vue-modern-tech-stack.md             
+W0-FILE-ARCH          PASS   D:\git\lemoo\docs\02 fastapi-vue-modern-architecture.md           
+W0-FILE-DESIGN        PASS   D:\git\lemoo\docs\03 ai-teaching-platform-design.md               
+W0-FILE-READINESS     PASS   D:\git\lemoo\docs\04 开发前准备与启动门禁.md                                
+W0-FILE-SOURCE        PASS   D:\git\lemoo\docs\入职要求详细.md                                       
+W0-PRD-STATUS         PASS   PRD-001 1.0.0 Stage 1A approval                                   
+W0-RTM-STATUS         PASS   RTM-001 1.0.0 Stage 1A approval                                   
+W0-OWNERS             PASS   Named Stage 1A approvals: 5/5                                     
+W0-AI-BOUNDARY        PASS   AI execution is distinct from human accountability                
+W0-ROLE-RISK          PASS   Single-person Stage 1A risk is recorded                           
+W0-TRACE-ID-COUNT     PASS   PRD=35, RTM=35                                                    
+W0-TRACE-ID-MATCH     PASS   Requirement ID differences: 0                                     
+W0-TRACE-COMPLETE     PASS   Complete approved trace rows: 35; invalid: 0                      
+W0-PILOT-SCOPE        PASS   Synthetic tenants and non-production virtual combination are fixed
+W0-PILOT-DEVICES      PASS   Six simulator devices are registered                              
+W0-REAL-SCOPE-BLOCKED PASS   Real device and production claims remain blocked                  
+W0-DECISIONS          PASS   Missing decision entries:                                         
+W0-RISKS              PASS   At least ten current risks have owner, mitigation and status      
+W0-BASELINES          PASS   01/02/03/04 status, owner and change rules are registered         
+W0-LINKS              PASS   Broken local links: 0                                             
+W0-FORMAT             PASS   Encoding/fence errors: 0                                          
+
+
+
+W0_RESULT=PASS; CHECKS=28; FAILED=0
+

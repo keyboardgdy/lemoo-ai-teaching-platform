@@ -1,0 +1,67 @@
+gate: Gate-0
+title: "Requirements and accountability traceability"
+status: passed
+scope:
+  phase: "Stage 1A"
+  mode: "simulator-only"
+  data: "synthetic-only"
+  environment: "non-production"
+  device_models:
+    - "SIM_EDU_ROBOT_V1"
+  physical_hardware: false
+inputs:
+  requirements_version: "PRD-001@1.0.0"
+  requirements_digest_sha256: "6B26988F42B1656DED0E9886654791914CBCCABEC523A4970AD6F022928A3C8D"
+  trace_matrix_version: "RTM-001@1.0.0"
+  trace_matrix_digest_sha256: "65F717283358091433F489C6F49636B8417D0ACC2A1EBB5B4F358A0CDF4D33E3"
+  owner_registry_version: "OWNER-001@1.1.0"
+  owner_registry_digest_sha256: "D98D194C49C90377146476679140C9B01EB1E9A4E613E54D47592B9755FED52E"
+  workspace_commit: "not_available_before_W2_git_initialization"
+evidence:
+  - id: "EVD-W0-001"
+    path: "docs/gates/evidence/W0/verify-w0.txt"
+    digest_sha256: "65DC102C206D499204D4EC0CEC7E4D026CCBB1CD17BDBD6C12C5167802D2D25E"
+  - id: "EVD-W0-002"
+    path: "docs/governance/BASELINE-REGISTRY.md"
+    digest_sha256: "D60C5B6F9E184D857FA05954CD62153A48C20F71108C2C54CAF43B3D2C315911"
+  - id: "EVD-W0-003"
+    path: "docs/governance/DECISION-LOG.md"
+    digest_sha256: "9C3A3616A1678DFB05AF4D8332D45960CD180C6DAFAC77764AD8CAE0C1FCD3CA"
+  - id: "EVD-W0-004"
+    path: "docs/governance/RISK-REGISTER.md"
+    digest_sha256: "0C7E7E20F1977DD601DE566C0D0DF048C8DE96C0F5E2AEF2D7A5CF4FBF3581F8"
+checks:
+  total: 28
+  passed: 28
+  failed: 0
+  command: "powershell -NoProfile -ExecutionPolicy Bypass -File docs/gates/verify-w0.ps1"
+exceptions:
+  - id: "EXC-W0-001"
+    description: "One natural person holds five temporary A roles. Risk accepted only for synthetic, non-production Stage 1A."
+    accepted_by: "高端阳"
+    expires_on: "scope_expansion_or_production"
+blocked_capabilities:
+  - "real-device"
+  - "real-institution"
+  - "real-person-data"
+  - "production"
+  - "content"
+  - "teaching"
+  - "ai"
+  - "ota"
+approved_by:
+  - name: "高端阳"
+    role: "Stage 1A temporary project owner"
+    basis: "GOV-D-004: PRD/RTM approval and acceptance of single-person governance risk"
+evaluated_by:
+  - name: "OpenAI Codex"
+    role: "AI Execution Agent"
+    basis: "28/28 deterministic W0 checks"
+approved_at: "2026-08-13T00:00:00+08:00"
+review_expires_at: ""
+review_triggers:
+  - "scope expansion"
+  - "real device introduced"
+  - "real institution or person data introduced"
+  - "production deployment"
+  - "accountable owner changed"
