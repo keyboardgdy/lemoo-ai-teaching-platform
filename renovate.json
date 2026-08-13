@@ -1,0 +1,22 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended"],
+  "dependencyDashboard": true,
+  "rangeStrategy": "replace",
+  "minimumReleaseAge": "7 days",
+  "labels": ["dependencies"],
+  "packageRules": [
+    {
+      "description": "Keep runtime major versions aligned with the approved stack",
+      "matchManagers": ["pep621", "npm"],
+      "matchUpdateTypes": ["major"],
+      "dependencyDashboardApproval": true
+    },
+    {
+      "description": "Group non-major development tooling updates",
+      "matchDepTypes": ["devDependencies", "dependency-groups"],
+      "matchUpdateTypes": ["minor", "patch"],
+      "groupName": "development tooling"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "name": "lemoo",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Simulator-only Stage 1A baseline for the Lemoo education robot cloud platform.",
+  "engines": {
+    "node": ">=24.0.0 <25.0.0",
+    "pnpm": ">=11.0.0 <12.0.0"
+  },
+  "packageManager": "pnpm@11.2.2",
+  "scripts": {
+    "lint": "pnpm --filter @lemoo/web lint",
+    "typecheck": "pnpm --filter @lemoo/web typecheck",
+    "test": "pnpm --filter @lemoo/web test",
+    "build": "pnpm --filter @lemoo/web build",
+    "format": "pnpm --filter @lemoo/web format",
+    "format:check": "pnpm --filter @lemoo/web format:check"
+  }
+}

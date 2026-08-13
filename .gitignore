@@ -1,0 +1,53 @@
+# Local configuration and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+secrets/
+
+# Python
+.python-version.local
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+coverage.xml
+htmlcov/
+dist/
+build/
+*.egg-info/
+
+# Node and frontend
+node_modules/
+.pnpm-store/
+apps/web/dist/
+apps/web/coverage/
+apps/web/playwright-report/
+apps/web/test-results/
+*.tsbuildinfo
+
+# Tools and editors
+.tools/
+.idea/
+.vscode/
+docs/.obsidian/
+*.swp
+*.swo
+
+# Runtime data
+.data/
+*.log
+*.pid
+tmp/
+
+# OS
+.DS_Store
+Thumbs.db
+Desktop.ini

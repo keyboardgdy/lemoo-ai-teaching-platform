@@ -1,0 +1,152 @@
+version: '3'
+
+vars:
+  CLOUD_PROJECT: apps/cloud
+  WEB_PACKAGE: '@lemoo/web'
+
+tasks:
+  default:
+    desc: List available tasks.
+    cmds:
+      - task --list
+
+  bootstrap:
+    desc: Install pinned runtimes and locked project dependencies.
+    cmds:
+      - uv python install 3.14
+      - uv sync --project {{.CLOUD_PROJECT}} --locked
+      - pnpm install --frozen-lockfile
+      - uv run --project {{.CLOUD_PROJECT}} python scripts/bootstrap.py
+
+  infra:config:
+    desc: Validate the local Compose model without starting containers.
+    cmds:
+      - docker compose --env-file .env.example config --quiet
+
+  infra:up:
+    desc: Start the local core dependency profile.
+    preconditions:
+      - sh: test -f .env
+        msg: Run task bootstrap first to create the untracked local .env file.
+    cmds:
+      - docker compose --env-file .env --profile core up -d --wait
+
+  infra:down:
+    desc: Stop local services while preserving named data volumes.
+    cmds:
+      - docker compose --env-file .env --profile core down --remove-orphans
+
+  dev:
+    desc: Start the FastAPI and Vue development servers.
+    deps: [dev:api, dev:web]
+
+  dev:api:
+    internal: true
+    cmds:
+      - uv run --project {{.CLOUD_PROJECT}} uvicorn app.entrypoints.api:app --reload --host 127.0.0.1 --port 8000
+
+  dev:web:
+    internal: true
+    cmds:
+      - pnpm --filter {{.WEB_PACKAGE}} dev
+
+  lint:
+    desc: Run backend and frontend lint/format checks.
+    deps: [backend:lint, frontend:lint]
+
+  typecheck:
+    desc: Run strict Python and Vue type checks.
+    deps: [backend:typecheck, frontend:typecheck]
+
+  test:
+    desc: Run the W2 unit test suites.
+    deps: [backend:test, frontend:test]
+
+  build:
+    desc: Build all W2 application artifacts.
+    deps: [backend:build, frontend:build]
+
+  backend:lint:
+    cmds:
+      - uv run --project {{.CLOUD_PROJECT}} ruff check apps/cloud scripts
+      - uv run --project {{.CLOUD_PROJECT}} ruff format --check apps/cloud scripts
+
+  backend:typecheck:
+    cmds:
+      - uv run --project {{.CLOUD_PROJECT}} pyright
+
+  backend:test:
+    cmds:
+      - uv run --project {{.CLOUD_PROJECT}} pytest apps/cloud/tests --cov=apps/cloud/app --cov-report=term-missing --cov-fail-under=90
+
+  backend:build:
+    cmds:
+      - uv build --project {{.CLOUD_PROJECT}}
+
+  backend:verify:
+    deps: [backend:lint, backend:typecheck, backend:test, backend:build]
+
+  frontend:lint:
+    cmds:
+      - pnpm --filter {{.WEB_PACKAGE}} lint
+      - pnpm --filter {{.WEB_PACKAGE}} format:check
+
+  frontend:typecheck:
+    cmds:
+      - pnpm --filter {{.WEB_PACKAGE}} typecheck
+
+  frontend:test:
+    cmds:
+      - pnpm --filter {{.WEB_PACKAGE}} test
+
+  frontend:build:
+    cmds:
+      - pnpm --filter {{.WEB_PACKAGE}} build
+
+  frontend:verify:
+    deps: [frontend:lint, frontend:typecheck, frontend:test, frontend:build]
+
+  docs:check:
+    cmds:
+      - uv run --project {{.CLOUD_PROJECT}} python scripts/check_docs.py
+
+  repo:check:
+    cmds:
+      - uv run --project {{.CLOUD_PROJECT}} python scripts/check_repo.py
+
+  openapi:generate:
+    cmds:
+      - uv run --project {{.CLOUD_PROJECT}} python scripts/export_openapi.py
+
+  schemas:check:
+    cmds:
+      - uv run --project {{.CLOUD_PROJECT}} python scripts/check_schemas.py
+
+  verify:
+    desc: Execute all checks required to complete W2.
+    deps: [lint, typecheck, test, build, docs:check, repo:check, schemas:check, infra:config]
+
+  test:integration:
+    cmds: [{ cmd: 'uv run --project {{.CLOUD_PROJECT}} python scripts/gate_not_ready.py G2-Device integration-tests' }]
+  test:protocol:
+    cmds: [{ cmd: 'uv run --project {{.CLOUD_PROJECT}} python scripts/gate_not_ready.py G2-Device protocol-tests' }]
+  test:e2e:
+    cmds: [{ cmd: 'uv run --project {{.CLOUD_PROJECT}} python scripts/gate_not_ready.py Gate-3-Sim playwright-e2e' }]
+  test:rls:
+    cmds: [{ cmd: 'uv run --project {{.CLOUD_PROJECT}} python scripts/gate_not_ready.py W6a rls-tests' }]
+  test:ota:
+    cmds: [{ cmd: 'uv run --project {{.CLOUD_PROJECT}} python scripts/gate_not_ready.py G2-OTA ota-tests' }]
+  test:ai-actions:
+    cmds: [{ cmd: 'uv run --project {{.CLOUD_PROJECT}} python scripts/gate_not_ready.py G2-AI ai-action-tests' }]
+  device:facts:check:
+    cmds: [{ cmd: 'uv run --project {{.CLOUD_PROJECT}} python scripts/gate_not_ready.py G1-Device physical-device-facts' }]
+  ci:baseline:check:
+    cmds: [{ cmd: 'uv run --project {{.CLOUD_PROJECT}} python scripts/gate_not_ready.py W7b4 full-ci-baseline' }]
+  migrate:
+    cmds: [{ cmd: 'uv run --project {{.CLOUD_PROJECT}} python scripts/gate_not_ready.py W6a database-migrations' }]
+  migrate:test:
+    cmds: [{ cmd: 'uv run --project {{.CLOUD_PROJECT}} python scripts/gate_not_ready.py W7b2 migration-test' }]
+  simulator:smoke:
+    cmds: [{ cmd: 'uv run --project {{.CLOUD_PROJECT}} python scripts/gate_not_ready.py W8b simulator-smoke' }]
+  image:verify:
+    cmds: [{ cmd: 'uv run --project {{.CLOUD_PROJECT}} python scripts/gate_not_ready.py W7c image-verification' }]
