@@ -60,7 +60,7 @@ def print_result() -> int:
         print(f"W1_RESULT=FAIL; CHECKS={len(checks)}; FAILED={len(failed)}")
         return 1
 
-    print(f"W1_RESULT=PASS; CHECKS={len(checks)}; FAILED=0; APPROVAL=PENDING")
+    print(f"W1_RESULT=PASS; CHECKS={len(checks)}; FAILED=0; APPROVAL=APPROVED")
     return 0
 
 
@@ -80,22 +80,33 @@ def main() -> int:
     acceptance = texts["ACCEPTANCE"]
     demo = texts["DEMO"]
 
-    proposed_status = "> 状态：Proposed — Awaiting Product/QA Owner Approval"
+    approved_status = "> 状态：Approved — Stage 1A Simulator-only"
     add_check(
         "W1-STATUS",
-        all(proposed_status in text for text in (mvp, story, acceptance))
-        and "> 状态：Proposed Script — Not Yet Executable" in demo,
-        "All W1 artifacts remain proposed until human approval",
+        all(approved_status in text for text in (mvp, story, acceptance))
+        and "> 状态：Approved Script — Not Yet Executed" in demo,
+        "All W1 artifacts have the approved Stage 1A status",
     )
-    pending_owners = re.findall(
-        r"^\| (?:Product Owner|QA/验收 Owner) \| 高端阳 \| Pending",
+    approved_owners = re.findall(
+        r"^\| (?:Product Owner|QA/验收 Owner) \| 高端阳 \| Approved",
         mvp,
         flags=re.MULTILINE,
     )
     add_check(
         "W1-APPROVAL-BOUNDARY",
-        len(pending_owners) == 2 and "不得批准自己的产物" in mvp,
-        "Product and QA approval belong to 高端阳, not Codex",
+        len(approved_owners) == 2 and "不得批准自己的产物" in mvp,
+        "Product and QA approval recorded for 高端阳; Codex remains non-approver",
+    )
+    approved_version = "> 版本：1.0.0"
+    approval_url = (
+        "https://github.com/keyboardgdy/lemoo-ai-teaching-platform/"
+        "issues/3#issuecomment-5278164835"
+    )
+    add_check(
+        "W1-APPROVAL-RECORD",
+        all(approved_version in text for text in (mvp, story, acceptance, demo, pilot))
+        and all(approval_url in text for text in (mvp, story, acceptance, demo, pilot)),
+        "All approved artifacts are versioned and reference the public approval record",
     )
 
     prd_stories = unique_matches(r"^\| (ST-[A-Z]+-\d{3}) \|", prd)

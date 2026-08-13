@@ -1,8 +1,10 @@
 # DEMO-001：阶段 1A 合成数据演示脚本
 
-> 版本：0.1.0
+> 版本：1.0.0
 >
-> 状态：Proposed Script — Not Yet Executable
+> 状态：Approved Script — Not Yet Executed
+>
+> 批准记录：[Issue #3 Approval](https://github.com/keyboardgdy/lemoo-ai-teaching-platform/issues/3#issuecomment-5278164835)
 >
 > 范围：[MVP-001](MVP-001%20阶段1A模拟器MVP范围.md)
 >

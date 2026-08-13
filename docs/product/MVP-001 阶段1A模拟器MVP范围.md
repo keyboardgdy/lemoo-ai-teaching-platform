@@ -1,24 +1,26 @@
 # MVP-001：阶段 1A 模拟器 MVP 范围
 
-> 文档类型：W1 产品范围审批候选
+> 文档类型：W1 已批准产品范围基线
 >
-> 版本：0.1.0
+> 版本：1.0.0
 >
-> 状态：Proposed — Awaiting Product/QA Owner Approval
+> 状态：Approved — Stage 1A Simulator-only
 >
 > 建立日期：2026 年 8 月 13 日
 >
-> Product Owner / QA Owner：高端阳（待批准本版本）
+> Product Owner / QA Owner：高端阳（2026 年 8 月 13 日批准）
 >
 > 执行编制：OpenAI Codex（非批准人）
 >
 > GitHub Work Item：[#3](https://github.com/keyboardgdy/lemoo-ai-teaching-platform/issues/3)
 >
+> 批准记录：[Issue #3 Approval](https://github.com/keyboardgdy/lemoo-ai-teaching-platform/issues/3#issuecomment-5278164835)
+>
 > 上位需求：[PRD-001](PRD-001%20教育机器人云平台.md) · [RTM-001](RTM-001%20教育机器人云平台需求追踪矩阵.md) · [PILOT-001](PILOT-001%20模拟器工程验证范围.md)
 >
 > 配套产物：[STORY-MAP-001](STORY-MAP-001%20阶段1A用户故事地图.md) · [ACCEPTANCE-001](ACCEPTANCE-001%20阶段1A验收矩阵.md) · [DEMO-001](DEMO-001%20阶段1A合成数据演示脚本.md)
 
-本文冻结 W1 的候选范围与成功判据，不代表业务功能已经实现。只有高端阳以 Product Owner 和 QA/验收 Owner 身份批准 `1.0.0` 后，W1 才能结束；任何实现证据仍须由后续工作包产生。
+本文冻结 W1 的已批准范围与成功判据，不代表业务功能已经实现。高端阳已同时以 Product Owner 和 QA/验收 Owner 身份批准 `1.0.0`；任何实现证据仍须由后续工作包产生。
 
 ## 一、CAPABILITY
 
@@ -159,21 +161,21 @@ W1 固定 7 个 P0 Story、12 项 P0 Requirement：
 |---|---|---|
 | W0 | Passed | 需求、责任与追踪可作为输入 |
 | W2 | Complete | 受保护 Public 仓库和基础 CI 可用 |
-| W1 Product/QA approval | Pending | 阻塞 W1 完成和依赖 W1 的后续工作包 |
+| W1 Product/QA approval | Approved 2026-08-13 | 解除依赖 W1 的准备工作包阻塞；不解除各自 Gate |
 | G1-Device | `blocked_no_physical_device` | 不阻塞阶段 1A；阻塞阶段 1B/真实试点/生产 |
 | 产品价值证据 | Missing | 不阻塞内部工程；阻塞客户价值和 Go/No-Go 声明 |
 | G2-Device / Gate 3-Sim | Not started | 阻塞正式业务切片启动 |
 
-W1 获批后，不直接开始业务 Handler。下一条可并行准备路线是 W4 风险边界、W5a/W5b 的 Device 契约、W6a 领域数据和 W7a 本地 TLS/Compose；它们仍各自受依赖和 Gate 约束。
+W1 已获批，但不直接开始业务 Handler。下一条可并行准备路线是 W4 风险边界、W5a/W5b 的 Device 契约、W6a 领域数据和 W7a 本地 TLS/Compose；它们仍各自受依赖和 Gate 约束。
 
 ## 八、审批记录
 
 | 角色 | 姓名 | 当前结论 | 日期 |
 |---|---|---|---|
-| Product Owner | 高端阳 | Pending | — |
-| QA/验收 Owner | 高端阳 | Pending；阶段 1A 一人多角色风险已单独接受 | — |
+| Product Owner | 高端阳 | Approved | 2026-08-13 |
+| QA/验收 Owner | 高端阳 | Approved；阶段 1A 一人多角色风险已单独接受 | 2026-08-13 |
 | 执行编制 | OpenAI Codex | Prepared；不得批准自己的产物 | 2026-08-13 |
 
-批准语句应明确为：
+批准记录原文：
 
 > 高端阳批准 MVP-001、STORY-MAP-001、ACCEPTANCE-001、DEMO-001 和 PILOT-001 组成 W1 阶段 1A Simulator-only 范围与验收基线；接受 7 个 P0 Story、1 个 P1 Story、11 个 Out Story 的分类，并确认该批准不涵盖真实设备、真实机构、个人数据、生产、内容、教学、AI、诊断或 OTA。

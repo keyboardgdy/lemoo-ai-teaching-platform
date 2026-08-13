@@ -1,8 +1,10 @@
 # ACCEPTANCE-001：阶段 1A 验收矩阵
 
-> 版本：0.1.0
+> 版本：1.0.0
 >
-> 状态：Proposed — Awaiting Product/QA Owner Approval
+> 状态：Approved — Stage 1A Simulator-only
+>
+> 批准记录：[Issue #3 Approval](https://github.com/keyboardgdy/lemoo-ai-teaching-platform/issues/3#issuecomment-5278164835)
 >
 > 范围：[MVP-001](MVP-001%20阶段1A模拟器MVP范围.md) · [STORY-MAP-001](STORY-MAP-001%20阶段1A用户故事地图.md)
 >
@@ -111,7 +113,7 @@
 
 | 等级 | 含义 | 当前状态 |
 |---|---|---|
-| Specified | 场景、输入、结果、Trace 和计划证据完整 | 本文候选完成，待 Owner 批准 |
+| Specified | 场景、输入、结果、Trace 和计划证据完整 | `1.0.0 Approved`；Product/QA Owner 已批准 |
 | Automated | 指定测试在固定 Commit/Schema 上通过 | 待后续工作包 |
 | Simulator Verified | 六台 Simulator 的适用场景通过 | 待 W8b/W9a |
 | HIL Verified | 同一套件在真实设备组合通过 | `blocked_no_physical_device` |
