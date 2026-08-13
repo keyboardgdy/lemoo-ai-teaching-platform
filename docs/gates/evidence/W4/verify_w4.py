@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import re
 import sys
 from dataclasses import dataclass
@@ -14,6 +15,7 @@ PATHS = {
     "PRD": DOCS / "product" / "PRD-001 教育机器人云平台.md",
     "RTM": DOCS / "product" / "RTM-001 教育机器人云平台需求追踪矩阵.md",
     "W1": DOCS / "gates" / "evidence" / "W1" / "baseline.yaml",
+    "BASELINE": DOCS / "gates" / "evidence" / "W4" / "baseline.yaml",
     "THREAT": DOCS / "security" / "THREAT-MODEL-001 平台威胁模型.md",
     "PRIVACY": DOCS / "privacy" / "PRIVACY-APPLICABILITY-001 隐私与AI法规适用性.md",
     "AUTHORITY": DOCS
@@ -78,6 +80,7 @@ def main() -> int:
     adr = texts["ADR"]
     approval = texts["APPROVAL"]
     secrets = texts["SECRETS"]
+    baseline = texts["BASELINE"]
     package = (DOCS / "gates" / "evidence" / "W4" / "README.md").read_text(
         encoding="utf-8"
     )
@@ -88,6 +91,7 @@ def main() -> int:
         "https://github.com/keyboardgdy/lemoo-ai-teaching-platform/"
         "issues/5#issuecomment-5278502909"
     )
+    approved_content_commit = "b3723fb9b4c573cd3b5d2579805c82c766402ddb"
     add_check(
         "W4-STATUS",
         all(
@@ -105,6 +109,43 @@ def main() -> int:
         and "OpenAI Codex（非批准人）" in threat
         and "不能用 OpenAI Codex 充当第二批准人" in approval,
         "Human approval record and Codex non-approval boundaries are explicit",
+    )
+    baseline_artifacts = {
+        name: PATHS[name]
+        for name in (
+            "THREAT",
+            "PRIVACY",
+            "AUTHORITY",
+            "DATA",
+            "CONTENT",
+            "ADR",
+            "APPROVAL",
+            "SECRETS",
+        )
+    }
+    missing_baseline_artifacts = [
+        name
+        for name, path in baseline_artifacts.items()
+        if str(path.relative_to(ROOT)).replace("\\", "/") not in baseline
+        or hashlib.sha256(path.read_bytes()).hexdigest().upper() not in baseline
+    ]
+    add_check(
+        "W4-BASELINE",
+        "status: approved" in baseline
+        and 'version: "1.0.0"' in baseline
+        and f'approved_content_commit: "{approved_content_commit}"' in baseline
+        and approved_content_commit in package
+        and approval_record in baseline
+        and baseline.count("digest_sha256:") == 8
+        and not missing_baseline_artifacts
+        and 'mode: "simulator-only"' in baseline
+        and 'data: "synthetic-only"' in baseline
+        and 'legal_opinion_or_compliance_certification: "not_provided"' in baseline
+        and 'production_authorization: "not_provided"' in baseline,
+        (
+            "approved content commit and eight artifact digests match; "
+            f"missing={','.join(missing_baseline_artifacts) or 'none'}"
+        ),
     )
 
     threat_ids = unique_matches(r"^\| (THR-\d{3}) \|", threat)

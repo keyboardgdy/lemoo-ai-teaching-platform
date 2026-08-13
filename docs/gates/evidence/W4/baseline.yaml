@@ -1,0 +1,84 @@
+work_package: W4
+title: "Security, privacy, content, and AI engineering boundary baseline"
+status: approved
+version: "1.0.0"
+scope:
+  phase: "Stage 1A"
+  mode: "simulator-only"
+  data: "synthetic-only"
+  environment: "non-production"
+approved_content_commit: "b3723fb9b4c573cd3b5d2579805c82c766402ddb"
+artifacts:
+  - id: "THREAT-MODEL-001@1.0.0"
+    path: "docs/security/THREAT-MODEL-001 平台威胁模型.md"
+    digest_sha256: "7D9F3B77DD4B06AF354C863A42FE97E6D4862A891815B45A84835115BB3A7360"
+  - id: "PRIVACY-APPLICABILITY-001@1.0.0"
+    path: "docs/privacy/PRIVACY-APPLICABILITY-001 隐私与AI法规适用性.md"
+    digest_sha256: "B597F044DE826DF8F89E96A447F9733927AAC81933422D3C228CF2337BB48EE5"
+  - id: "PROCESSING-AUTHORITY-001@1.0.0"
+    path: "docs/privacy/PROCESSING-AUTHORITY-001 数据处理权限与目的矩阵.md"
+    digest_sha256: "24EC9265F8FDB086293C66F8F20B3A0332654C39864C020618BDE5145115B9C3"
+  - id: "DATA-POLICY-001@1.0.0"
+    path: "docs/privacy/DATA-POLICY-001 数据分类保留与删除政策.md"
+    digest_sha256: "592344E611D9BC8382CAE69C27AC39849F2B60ECC7B73A5136FA0085024FBCA9"
+  - id: "CONTENT-GOVERNANCE-001@1.0.0"
+    path: "docs/content/CONTENT-GOVERNANCE-001 内容权利审核与撤回.md"
+    digest_sha256: "105BBD95462E18B9ABCEC71FE7F49B9D5636526A923DED1242AD1D519B20145E"
+  - id: "ADR-001@accepted"
+    path: "docs/decisions/ADR-001 AI Provider适配器与Fake-first策略.md"
+    digest_sha256: "74D1CAE4B71E24D4FF408A79498A1DD0902D2A48C9CEB0A9A25B2C9B3F7C8435"
+  - id: "APPROVAL-MATRIX-001@1.0.0"
+    path: "docs/security/APPROVAL-MATRIX-001 高风险操作审批矩阵.md"
+    digest_sha256: "6BB9F796C1FCD9EC16B143184B31D0863329EAB4ED72632803FFBCB1CC686CB4"
+  - id: "SECRET-INVENTORY-001@1.0.0"
+    path: "docs/security/SECRET-INVENTORY-001 Secret与密钥清单.md"
+    digest_sha256: "AAF6EB9F87387A5CA15C45058C1865480AED15EE481B0B36C90C69C2A7D3349E"
+classification:
+  threats: 26
+  security_invariants: 12
+  applicability_regimes: 7
+  jurisdiction_facts: 8
+  assessment_triggers: 6
+  processing_purposes: 13
+  data_classes: 5
+  synthetic_data_policies: 7
+  high_risk_actions: 14
+  secret_classes: 14
+  ai_capability_ports: 8
+approval:
+  approved_at: "2026-08-13T00:00:00+08:00"
+  approval_record: "https://github.com/keyboardgdy/lemoo-ai-teaching-platform/issues/5#issuecomment-5278502909"
+  approved_by:
+    - name: "高端阳"
+      role: "Security/Privacy Owner"
+  prepared_by:
+    name: "OpenAI Codex"
+    role: "AI Execution Agent; non-approver"
+unresolved_facts:
+  - "applicable-jurisdiction-and-operating-entity"
+  - "controller-processor-and-contractual-roles"
+  - "real-institution-and-data-subject-population"
+  - "real-data-purpose-authority-retention-and-deletion"
+  - "provider-region-dpa-training-and-subprocessor-terms"
+  - "physical-device-firmware-and-network-facts"
+  - "second-independent-human-approver"
+  - "production-secret-and-signing-infrastructure"
+blocked_capabilities:
+  - "real-device"
+  - "real-institution"
+  - "real-person-data"
+  - "production"
+  - "content"
+  - "teaching"
+  - "ai"
+  - "diagnostic"
+  - "bulk-command"
+  - "ota"
+gates:
+  w4_engineering_boundary: "approved"
+  legal_opinion_or_compliance_certification: "not_provided"
+  g1_device: "blocked_no_physical_device"
+  g2_content: "not_started"
+  g2_teaching: "not_started"
+  g2_ai: "not_started"
+  production_authorization: "not_provided"

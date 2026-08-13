@@ -1,18 +1,24 @@
-# W4 安全、隐私、内容与 AI 边界候选证据
+# W4 安全、隐私、内容与 AI 工程边界批准证据
 
 > 工作包：W4 冻结安全、隐私与 AI 边界
 >
-> 状态：`awaiting_security_privacy_owner_approval`
+> 状态：`approved`
 >
 > 执行日期：2026-08-13
 >
 > 执行编制：OpenAI Codex（非批准人）
 >
-> 安全/隐私 Owner：高端阳
+> 安全/隐私 Owner：高端阳（2026-08-13 批准）
 >
 > GitHub Issue：[#5](https://github.com/keyboardgdy/lemoo-ai-teaching-platform/issues/5)
+>
+> 批准记录：[#5 approval](https://github.com/keyboardgdy/lemoo-ai-teaching-platform/issues/5#issuecomment-5278502909)
+>
+> 批准内容提交：`b3723fb9b4c573cd3b5d2579805c82c766402ddb`
+>
+> 机器可验证基线：[baseline.yaml](baseline.yaml)
 
-## 候选产物
+## 批准产物
 
 - [THREAT-MODEL-001](../../../security/THREAT-MODEL-001%20平台威胁模型.md)
 - [PRIVACY-APPLICABILITY-001](../../../privacy/PRIVACY-APPLICABILITY-001%20隐私与AI法规适用性.md)
@@ -23,7 +29,7 @@
 - [APPROVAL-MATRIX-001](../../../security/APPROVAL-MATRIX-001%20高风险操作审批矩阵.md)
 - [SECRET-INVENTORY-001](../../../security/SECRET-INVENTORY-001%20Secret与密钥清单.md)
 
-## 当前候选判定
+## 当前批准判定
 
 - 已识别 26 个 Web/Device/Data/AI/Content/OTA/Supply-chain 威胁与 12 条安全不变量。
 - 适用法域、运营/签约实体、数据主体和控制者/处理者角色仍未知；真实个人数据继续 `UNSET_BLOCKED`。
@@ -67,11 +73,11 @@ uv run --project apps/cloud python docs/gates/evidence/W4/verify_w4.py
 task docs:check
 ```
 
-## 本地候选验证
+## 批准基线验证
 
 | 检查 | 2026-08-13 结果 |
 |---|---|
-| `verify_w4.py` | `PASS`；27/27，`APPROVAL=PENDING` |
+| `verify_w4.py` | `PASS`；29/29，`APPROVAL=APPROVED`；八份产物摘要与批准内容提交已锁定 |
 | `task docs:check` | `PASS`；50 个 Markdown 文档 |
 | `task verify` | `PASS`；后端 7 项测试、95.71% 覆盖率，前端 1 项测试、100% 覆盖率，其余构建/类型/格式/Schema/Compose 检查通过 |
 | `pre-commit run --all-files` | `PASS`；包含私钥、格式和基础文件检查 |
@@ -79,14 +85,17 @@ task docs:check
 | Trivy clean-checkout equivalent | `PASS`；项目锁文件和版本控制配置无 High/Critical 发现 |
 | [PR #6 首轮 Required Checks](https://github.com/keyboardgdy/lemoo-ai-teaching-platform/actions/runs/31686134622) | `PASS`；governance、backend、frontend、compose、security 全绿 |
 
-## 待完成
+## 完成情况
 
 - [x] W4 自动一致性检查全绿
 - [x] 全仓文档、格式、测试与 Secret 检查全绿
 - [x] W4 PR Required Checks 全绿
-- [ ] 高端阳以安全/隐私 Owner 身份批准八份产物
-- [ ] 批准后升级为 `1.0.0 Approved`，记录 Commit/Digest 并关闭 Issue #5
+- [x] 高端阳以安全/隐私 Owner 身份批准八份产物
+- [x] 产物升级为 `1.0.0 Approved`（ADR-001 为 `accepted`），记录 Commit/Digest
+- [ ] 批准更新后的 PR Required Checks 全绿并合并，关闭 Issue #5
 
-建议批准语句：
+批准原文：
 
 > 高端阳批准 THREAT-MODEL-001、PRIVACY-APPLICABILITY-001、PROCESSING-AUTHORITY-001、DATA-POLICY-001、CONTENT-GOVERNANCE-001、ADR-001、APPROVAL-MATRIX-001 和 SECRET-INVENTORY-001 组成 W4 安全/隐私工程基线；确认该批准不是法律意见、合规认证或生产授权，不批准处理真实个人数据，也不启用真实设备、机构、Provider、内容、教学、AI、诊断、批量命令或 OTA。
+
+用户消息中的 `CONTENT- GOVERNANCE-001` 已按其明确批准语义规范化为正式文档 ID `CONTENT-GOVERNANCE-001`。本次批准只接受工程边界，不解决适用法域等未决事实，也不改变任何禁用能力状态。
