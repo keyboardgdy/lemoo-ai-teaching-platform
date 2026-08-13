@@ -10,6 +10,7 @@
 > 对应 RTM：[RTM-001 需求追踪矩阵](RTM-001%20教育机器人云平台需求追踪矩阵.md)  
 > 责任与授权：[OWNER-001 责任人与 AI 执行授权](../governance/OWNER-001%20责任人与AI执行授权.md)  
 > Gate 0：[需求与责任门禁](../gates/gate-0.yaml)（Passed 2026-08-13）
+> W1 批准：[MVP-001](MVP-001%20阶段1A模拟器MVP范围.md) · [Issue #3 Approval](https://github.com/keyboardgdy/lemoo-ai-teaching-platform/issues/3#issuecomment-5278164835)（Approved 2026-08-13）
 
 ## 一、CAPABILITY
 
@@ -171,3 +172,4 @@ G1-Device 保持 `blocked_no_physical_device`，不阻塞内部模拟器开发�
 | QA/验收 Owner | Confirmed for Stage 1A | 高端阳；已接受一人多角色独立性风险 |
 | 真实试点机构 | Not selected | 当前明确不使用，不能以 ORG-SIM-A 替代 |
 | 真实设备组合 | Blocked | 当前没有物理设备；G1-Device 不通过 |
+| W1 Product/QA Approval | Approved | 高端阳批准本文与 MVP/Story Map/Acceptance/Demo 组成阶段 1A Simulator-only 基线 |
