@@ -12,9 +12,11 @@
 
 ## 结论
 
-Windows 本地 W2 骨架与验证已通过。仓库只包含空业务 FastAPI/Vue 骨架、契约与 Simulator 目录占位、本地开发依赖和最小 CI；Content、Teaching、AI、OTA、真实设备、真实机构数据和生产路径均保持禁用或未实现。
+Windows 本地 W2 骨架与验证，以及 PR #1 的 Linux 五项 CI 均已通过。仓库只包含空业务 FastAPI/Vue 骨架、契约与 Simulator 目录占位、本地开发依赖和最小 CI；Content、Teaching、AI、OTA、真实设备、真实机构数据和生产路径均保持禁用或未实现。
 
-远端采用私有仓库 `keyboardgdy/lemoo-ai-teaching-platform`。账户中已存在的 `keyboardgdy/Lemoo` 是公开 C# `Lemoo.UI` 项目，具有不相容历史，因此未覆盖、未强推、未修改。远端 Linux CI 和 `main` 分支保护结果在 W2 PR 创建后补记到本文。
+远端采用私有仓库 `keyboardgdy/lemoo-ai-teaching-platform`。账户中已存在的 `keyboardgdy/Lemoo` 是公开 C# `Lemoo.UI` 项目，具有不相容历史，因此未覆盖、未强推、未修改。
+
+W2 当前状态为 `blocked_branch_protection`：GitHub REST API 对私有 `main` 返回 HTTP 403，要求升级 GitHub Pro 或公开仓库。项目保持私有，不用扩大可见性绕过门禁；在套餐升级并启用保护，或高端阳书面批准有期限的例外前，不把 W2 标为完成，也不进入依赖 W2 的后续工作包。
 
 ## 基线与版本
 
@@ -65,6 +67,7 @@ docker compose ps
 | Gitleaks | PASS；治理历史和 W2 暂存差异均未发现 Secret |
 | Trivy fs | PASS；`uv.lock` 与 `pnpm-lock.yaml` 高危/严重漏洞 0，Secret/Misconfiguration 无命中 |
 | Core Compose | PASS；PostgreSQL 18.3、Redis 8.2.1、MinIO、EMQX 5.8.8 均为 `healthy` |
+| PR #1 Linux CI | PASS；run `31679601649` 的 `governance/backend/frontend/compose/security` 5/5 通过 |
 
 ## 安全与范围说明
 
@@ -77,6 +80,7 @@ docker compose ps
 ## 远端结果
 
 - 仓库：`keyboardgdy/lemoo-ai-teaching-platform`（Private）
-- W2 PR：待创建
-- Linux CI：待运行
-- `main` 分支保护：待配置并验证
+- W2 PR：`https://github.com/keyboardgdy/lemoo-ai-teaching-platform/pull/1`
+- Linux CI：PASS，run `31679601649`，五项检查全绿
+- `main` 分支保护：BLOCKED；2026-08-13 API 返回 HTTP 403：`Upgrade to GitHub Pro or make this repository public to enable this feature.`
+- 推荐处置：保持 Private，升级 GitHub Pro 后启用 `governance/backend/frontend/compose/security` Required Checks、PR、线性历史、禁止强推/删除和对话解决
