@@ -26,8 +26,9 @@
 | D-016 | Confirmed | 允许 Simulator-only 工程开发，不通过 G1-Device | 高端阳 | 已确认 2026-08-13 | 阶段 1A |
 | D-017 | Confirmed | OpenAI Codex 统一承担五类执行职责，人类批准责任不转移 | 高端阳 | 已确认 2026-08-13 | 全项目执行治理 |
 | D-018 | Approved | 高端阳统一承接阶段 1A 五类 A，批准 PRD/RTM 并接受一人多角色风险 | 高端阳 | 已批准 2026-08-13 | 阶段 1A |
-| D-019 | Confirmed | 新项目远端使用私有 `keyboardgdy/lemoo-ai-teaching-platform`；不覆盖既有公开 C# `keyboardgdy/Lemoo` | 高端阳授权范围内由 OpenAI Codex 执行 | 已执行 2026-08-13 | W2 仓库与工具链 |
-| D-020 | Open | 保持新仓库私有；推荐升级 GitHub Pro 后启用 `main` 保护，不以改为公开作为默认绕过 | 高端阳 | W2 完成前 | 阻塞 W2 完成及依赖 W2 的后续工作包 |
+| D-019 | Confirmed | 新项目远端使用 `keyboardgdy/lemoo-ai-teaching-platform`；不覆盖既有公开 C# `keyboardgdy/Lemoo` | 高端阳授权范围内由 OpenAI Codex 执行 | 已执行 2026-08-13 | W2 仓库与工具链 |
+| D-020 | Confirmed | 高端阳明确决定公开新仓库；Public 后立即启用 `main` 强制保护，不再需要 GitHub Pro 例外 | 高端阳 | 已确认并执行 2026-08-13 | W2 完成，解除后续工作包阻塞 |
+| D-021 | Confirmed | 采用 Apache License 2.0，保留贡献者版权并提供明确版权、再分发和专利许可 | 高端阳授权范围内由 OpenAI Codex 执行 | 已执行 2026-08-13 | 开源仓库及贡献治理 |
 | GATE-0 | Passed | W0 自动校验 28/28 通过；需求、责任、范围、决策和追踪满足工程准备入口 | 高端阳批准输入；OpenAI Codex 执行校验 | 2026-08-13 | 允许进入工程骨架与 G2-Device 准备 |
 
 ## 状态规则
