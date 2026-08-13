@@ -155,9 +155,7 @@ def main() -> int:
     future_prefixes = ("ST-CNT-", "ST-TCH-", "ST-AI-", "ST-OTA-")
     invalid_p0 = [item for item in p0_stories if item.startswith(future_prefixes)]
     invalid_p1 = [
-        item
-        for item in p1_stories
-        if item.startswith((*future_prefixes, "ST-OPS-"))
+        item for item in p1_stories if item.startswith((*future_prefixes, "ST-OPS-"))
     ]
     add_check(
         "W1-FUTURE-OUT",
@@ -255,7 +253,9 @@ def main() -> int:
     )
 
     disabled = ["Content", "Teaching", "AI", "Diagnostic", "Bulk", "OTA"]
-    missing_disabled = [item for item in disabled if item not in mvp or item not in demo]
+    missing_disabled = [
+        item for item in disabled if item not in mvp or item not in demo
+    ]
     add_check(
         "W1-FAIL-CLOSED",
         not missing_disabled and "disabled/not_started" in mvp,

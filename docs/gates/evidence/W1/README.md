@@ -49,12 +49,13 @@ W1 自动检查只证明候选文档内部一致，不构成高端阳的产品/�
 | `pre-commit run --all-files` | `PASS`；包含私钥检测、格式与基础文件检查 |
 | Gitleaks | `PASS`；10 个提交未发现泄漏 |
 | Trivy clean-checkout equivalent | `PASS`；排除未跟踪的本地 `.venv`/`node_modules` 后，项目锁文件和版本控制配置无 High/Critical 发现；最终判定以 PR Security Check 为准 |
+| [PR #4 首轮 Required Checks](https://github.com/keyboardgdy/lemoo-ai-teaching-platform/actions/runs/31682990854) | `PASS`；governance、backend、frontend、compose、security 全绿 |
 
 ## 待完成
 
 - [x] W1 自动检查全绿
 - [x] 全仓文档、格式和 Secret 检查全绿
-- [ ] W1 PR Required Checks 全绿
+- [x] W1 PR Required Checks 全绿
 - [ ] 高端阳以 Product Owner 身份批准范围/优先级
 - [ ] 高端阳以 QA/验收 Owner 身份批准 28 场景、指标和 Demo Script
 - [ ] 批准后将四份产物升级为 `1.0.0 Approved`，记录 Commit/Digest 并关闭 Issue #3
