@@ -12,9 +12,15 @@
 >
 > GitHub Issue：[#5](https://github.com/keyboardgdy/lemoo-ai-teaching-platform/issues/5)
 >
+> 合并 PR：[#6](https://github.com/keyboardgdy/lemoo-ai-teaching-platform/pull/6)
+>
 > 批准记录：[#5 approval](https://github.com/keyboardgdy/lemoo-ai-teaching-platform/issues/5#issuecomment-5278502909)
 >
+> 关闭记录：[#5 resolution](https://github.com/keyboardgdy/lemoo-ai-teaching-platform/issues/5#issuecomment-5278611147)
+>
 > 批准内容提交：`b3723fb9b4c573cd3b5d2579805c82c766402ddb`
+>
+> 主分支合并提交：`58a06691c5ebcfea0b41ecdfb3047de33ece1e44`
 >
 > 机器可验证基线：[baseline.yaml](baseline.yaml)
 
@@ -85,6 +91,7 @@ task docs:check
 | Trivy clean-checkout equivalent | `PASS`；项目锁文件和版本控制配置无 High/Critical 发现 |
 | [PR #6 首轮 Required Checks](https://github.com/keyboardgdy/lemoo-ai-teaching-platform/actions/runs/31686134622) | `PASS`；governance、backend、frontend、compose、security 全绿 |
 | [PR #6 批准更新 Required Checks](https://github.com/keyboardgdy/lemoo-ai-teaching-platform/actions/runs/31687188881) | `PASS`；governance、backend、frontend、compose、security 全绿 |
+| [主分支合并后检查](https://github.com/keyboardgdy/lemoo-ai-teaching-platform/actions/runs/31687381776) | `PASS`；提交 `58a0669` 的 governance、backend、frontend、compose、security 全绿 |
 
 ## 完成情况
 
@@ -94,7 +101,7 @@ task docs:check
 - [x] 高端阳以安全/隐私 Owner 身份批准八份产物
 - [x] 产物升级为 `1.0.0 Approved`（ADR-001 为 `accepted`），记录 Commit/Digest
 - [x] 批准更新后的 PR Required Checks 全绿
-- [ ] PR 合并并关闭 Issue #5
+- [x] PR #6 合并并关闭 Issue #5；主分支 W4 验证与 CI 全绿
 
 批准原文：
 
