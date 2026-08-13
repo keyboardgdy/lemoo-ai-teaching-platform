@@ -6,7 +6,7 @@ Lemoo 是“题库管理 + AI 机器人互动 + 设备运维”一体化教育�
 
 - PRD/RTM：`1.0.0 Approved for Stage 1A Simulator-only`
 - Gate 0：`passed`
-- W2：仓库与工具链建设中
+- W2：`complete`，Windows/Linux CI 与受保护 `main` 已验证
 - G1-Device：`blocked_no_physical_device`
 - 内容、教学、AI、OTA：`disabled/not_started`
 
@@ -51,3 +51,7 @@ task dev
 - `infra`：Compose、网关、EMQX、可观测性和镜像配置。
 
 业务功能只能在相应 Requirement、契约和 Gate 就绪后实现。当前健康检查页面和进程占位不是业务能力。
+
+## 开源许可
+
+本项目以 [Apache License 2.0](LICENSE) 开源。提交贡献即表示贡献内容按该许可证提供；安全问题请按 [Security Policy](SECURITY.md) 私下报告，不要在公开 Issue 中披露漏洞或敏感信息。

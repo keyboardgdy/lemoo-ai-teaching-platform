@@ -7,6 +7,7 @@ name = "lemoo-cloud"
 version = "0.1.0"
 description = "Lemoo education robot cloud process baseline."
 readme = "README.md"
+license = "Apache-2.0"
 requires-python = ">=3.14,<3.15"
 dependencies = [
   "alembic>=1.16,<2",

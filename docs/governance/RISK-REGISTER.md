@@ -20,7 +20,7 @@
 | RISK-008 | Secret、测试证书或生产权限误用 | 中 | 极高 | 只生成本地测试凭据；禁止生产 Key；Secret 扫描与环境隔离 | 高端阳 | Open / Gate 3-Sim blocker |
 | RISK-009 | Windows 与 Linux/容器行为不一致 | 中 | 中 | 跨平台脚本、Linux CI、Windows Smoke；路径和换行检查 | 高端阳 | Open |
 | RISK-010 | 尚无客户问题和价值指标基线 | 高 | 高 | 不阻塞内部阶段 1A；阻塞真实试点承诺和 Go/No-Go | 高端阳 | Deferred to real pilot preparation |
-| RISK-011 | 当前 GitHub 套餐无法为私有仓库启用 `main` 分支保护，规则只有文档约束而非服务端强制 | 高 | 高 | 仓库保持私有；PR #1 CI 全绿；禁止直接推送/强推；推荐升级 GitHub Pro 后立即启用五项 Required Checks、PR、线性历史、禁强推/删除和对话解决 | 高端阳 | Open / W2 blocker |
+| RISK-011 | 原私有仓库套餐无法启用 `main` 分支保护 | 低 | 高 | 高端阳决定开源；仓库已 Public，并启用五项 Required Checks、PR、线性历史、管理员约束、禁强推/删除和对话解决 | 高端阳 | Mitigated / Closed 2026-08-13 |
 
 ## 复核规则
 

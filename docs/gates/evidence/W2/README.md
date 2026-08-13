@@ -12,11 +12,9 @@
 
 ## 结论
 
-Windows 本地 W2 骨架与验证，以及 PR #1 的 Linux 五项 CI 均已通过。仓库只包含空业务 FastAPI/Vue 骨架、契约与 Simulator 目录占位、本地开发依赖和最小 CI；Content、Teaching、AI、OTA、真实设备、真实机构数据和生产路径均保持禁用或未实现。
+W2 状态为 `complete`。Windows 本地骨架与验证、PR #1、合并后 Public `main` 的 Linux 五项 CI 及分支保护均已通过。仓库只包含空业务 FastAPI/Vue 骨架、契约与 Simulator 目录占位、本地开发依赖和最小 CI；Content、Teaching、AI、OTA、真实设备、真实机构数据和生产路径均保持禁用或未实现。
 
-远端采用私有仓库 `keyboardgdy/lemoo-ai-teaching-platform`。账户中已存在的 `keyboardgdy/Lemoo` 是公开 C# `Lemoo.UI` 项目，具有不相容历史，因此未覆盖、未强推、未修改。
-
-W2 当前状态为 `blocked_branch_protection`：GitHub REST API 对私有 `main` 返回 HTTP 403，要求升级 GitHub Pro 或公开仓库。项目保持私有，不用扩大可见性绕过门禁；在套餐升级并启用保护，或高端阳书面批准有期限的例外前，不把 W2 标为完成，也不进入依赖 W2 的后续工作包。
+远端采用 Public `keyboardgdy/lemoo-ai-teaching-platform`，以 Apache License 2.0 开源。账户中已存在的 `keyboardgdy/Lemoo` 是公开 C# `Lemoo.UI` 项目，具有不相容历史，因此未覆盖、未强推、未修改。仓库公开后，原套餐限制解除并成功启用 `main` 服务端保护。
 
 ## 基线与版本
 
@@ -79,8 +77,9 @@ docker compose ps
 
 ## 远端结果
 
-- 仓库：`keyboardgdy/lemoo-ai-teaching-platform`（Private）
+- 仓库：`keyboardgdy/lemoo-ai-teaching-platform`（Public，Apache-2.0）
 - W2 PR：`https://github.com/keyboardgdy/lemoo-ai-teaching-platform/pull/1`
 - Linux CI：PASS，Commit `454c7ae`、run `31679934413`，五项检查全绿且无 Node 20 弃用警告
-- `main` 分支保护：BLOCKED；2026-08-13 API 返回 HTTP 403：`Upgrade to GitHub Pro or make this repository public to enable this feature.`
-- 推荐处置：保持 Private，升级 GitHub Pro 后启用 `governance/backend/frontend/compose/security` Required Checks、PR、线性历史、禁止强推/删除和对话解决
+- 合并后 `main` CI：PASS，Commit `97d3d8f`、run `31680157398`，五项检查全绿
+- `main` 分支保护：PASS；Required Checks=`governance/backend/frontend/compose/security`，strict、PR、线性历史、管理员约束、禁强推/删除、对话解决均启用
+- GitHub 安全设置：Secret scanning、Push protection、Dependabot alerts/security updates、Private vulnerability reporting 已启用
