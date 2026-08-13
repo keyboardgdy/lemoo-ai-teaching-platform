@@ -67,7 +67,7 @@ docker compose ps
 | Gitleaks | PASS；治理历史和 W2 暂存差异均未发现 Secret |
 | Trivy fs | PASS；`uv.lock` 与 `pnpm-lock.yaml` 高危/严重漏洞 0，Secret/Misconfiguration 无命中 |
 | Core Compose | PASS；PostgreSQL 18.3、Redis 8.2.1、MinIO、EMQX 5.8.8 均为 `healthy` |
-| PR #1 Linux CI | PASS；run `31679601649` 的 `governance/backend/frontend/compose/security` 5/5 通过 |
+| PR #1 Linux CI | PASS；Commit `454c7ae`、run `31679934413` 的 `governance/backend/frontend/compose/security` 5/5 通过 |
 
 ## 安全与范围说明
 
@@ -81,6 +81,6 @@ docker compose ps
 
 - 仓库：`keyboardgdy/lemoo-ai-teaching-platform`（Private）
 - W2 PR：`https://github.com/keyboardgdy/lemoo-ai-teaching-platform/pull/1`
-- Linux CI：PASS，run `31679601649`，五项检查全绿
+- Linux CI：PASS，Commit `454c7ae`、run `31679934413`，五项检查全绿且无 Node 20 弃用警告
 - `main` 分支保护：BLOCKED；2026-08-13 API 返回 HTTP 403：`Upgrade to GitHub Pro or make this repository public to enable this feature.`
 - 推荐处置：保持 Private，升级 GitHub Pro 后启用 `governance/backend/frontend/compose/security` Required Checks、PR、线性历史、禁止强推/删除和对话解决
