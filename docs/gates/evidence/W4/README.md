@@ -84,6 +84,7 @@ task docs:check
 | Gitleaks | `PASS`；暂存 W4 约 70 KB 和完整 16 个提交均未发现泄漏 |
 | Trivy clean-checkout equivalent | `PASS`；项目锁文件和版本控制配置无 High/Critical 发现 |
 | [PR #6 首轮 Required Checks](https://github.com/keyboardgdy/lemoo-ai-teaching-platform/actions/runs/31686134622) | `PASS`；governance、backend、frontend、compose、security 全绿 |
+| [PR #6 批准更新 Required Checks](https://github.com/keyboardgdy/lemoo-ai-teaching-platform/actions/runs/31687188881) | `PASS`；governance、backend、frontend、compose、security 全绿 |
 
 ## 完成情况
 
@@ -92,7 +93,8 @@ task docs:check
 - [x] W4 PR Required Checks 全绿
 - [x] 高端阳以安全/隐私 Owner 身份批准八份产物
 - [x] 产物升级为 `1.0.0 Approved`（ADR-001 为 `accepted`），记录 Commit/Digest
-- [ ] 批准更新后的 PR Required Checks 全绿并合并，关闭 Issue #5
+- [x] 批准更新后的 PR Required Checks 全绿
+- [ ] PR 合并并关闭 Issue #5
 
 批准原文：
 
