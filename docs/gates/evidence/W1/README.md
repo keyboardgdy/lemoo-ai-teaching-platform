@@ -54,6 +54,7 @@ W1 自动检查证明批准文档、公开批准记录、版本、Digest 和范�
 | Gitleaks | `PASS`；10 个提交未发现泄漏 |
 | Trivy clean-checkout equivalent | `PASS`；排除未跟踪的本地 `.venv`/`node_modules` 后，项目锁文件和版本控制配置无 High/Critical 发现；最终判定以 PR Security Check 为准 |
 | [PR #4 首轮 Required Checks](https://github.com/keyboardgdy/lemoo-ai-teaching-platform/actions/runs/31682990854) | `PASS`；governance、backend、frontend、compose、security 全绿 |
+| [PR #4 批准升级检查](https://github.com/keyboardgdy/lemoo-ai-teaching-platform/actions/runs/31684384490) | `PASS`；批准文档、Digest 与证据提交后的五项 Required Checks 全绿 |
 
 ## 待完成
 
@@ -64,4 +65,4 @@ W1 自动检查证明批准文档、公开批准记录、版本、Digest 和范�
 - [x] 高端阳以 QA/验收 Owner 身份批准 28 场景、指标和 Demo Script
 - [x] 四份 W1 产物升级为 `1.0.0 Approved`，PILOT-001 批准引用已记录
 - [x] 基线 Commit、Artifact Digest 和公开批准记录已写入 `baseline.yaml`
-- [ ] 批准升级后的 PR Required Checks 全绿并合并 PR #4
+- [x] 批准升级后的 PR Required Checks 全绿；PR #4 可合并
