@@ -77,12 +77,13 @@ task docs:check
 | `pre-commit run --all-files` | `PASS`；包含私钥、格式和基础文件检查 |
 | Gitleaks | `PASS`；暂存 W4 约 70 KB 和完整 16 个提交均未发现泄漏 |
 | Trivy clean-checkout equivalent | `PASS`；项目锁文件和版本控制配置无 High/Critical 发现 |
+| [PR #6 首轮 Required Checks](https://github.com/keyboardgdy/lemoo-ai-teaching-platform/actions/runs/31686134622) | `PASS`；governance、backend、frontend、compose、security 全绿 |
 
 ## 待完成
 
 - [x] W4 自动一致性检查全绿
 - [x] 全仓文档、格式、测试与 Secret 检查全绿
-- [ ] W4 PR Required Checks 全绿
+- [x] W4 PR Required Checks 全绿
 - [ ] 高端阳以安全/隐私 Owner 身份批准八份产物
 - [ ] 批准后升级为 `1.0.0 Approved`，记录 Commit/Digest 并关闭 Issue #5
 
