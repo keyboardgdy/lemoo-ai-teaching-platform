@@ -1,0 +1,30 @@
+name: Traced work item
+description: Propose work tied to the approved product and gate model.
+title: "[Work] "
+labels: [work-item]
+body:
+  - type: input
+    id: trace
+    attributes:
+      label: Requirement / acceptance / gate
+      placeholder: PRD-OPS-002 / AC-OPS-002 / G2-Device
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Required outcome
+    validations:
+      required: true
+  - type: textarea
+    id: constraints
+    attributes:
+      label: Constraints and non-goals
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Planned tests and evidence
+    validations:
+      required: true

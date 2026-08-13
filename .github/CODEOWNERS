@@ -1,0 +1,10 @@
+# Stage 1A temporary accountable owner
+* @keyboardgdy
+
+# High-risk and contract surfaces
+/docs/product/ @keyboardgdy
+/docs/governance/ @keyboardgdy
+/docs/gates/ @keyboardgdy
+/packages/ @keyboardgdy
+/infra/ @keyboardgdy
+/.github/ @keyboardgdy

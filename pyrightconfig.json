@@ -1,0 +1,13 @@
+{
+  "include": ["apps/cloud/app", "apps/cloud/tests"],
+  "exclude": ["apps/cloud/.venv", "apps/cloud/migrations/versions"],
+  "typeCheckingMode": "strict",
+  "pythonVersion": "3.14",
+  "extraPaths": ["apps/cloud"],
+  "venvPath": "apps/cloud",
+  "venv": ".venv",
+  "reportMissingTypeStubs": "warning",
+  "reportUnknownMemberType": "error",
+  "reportUnknownArgumentType": "error",
+  "reportUnknownVariableType": "error"
+}

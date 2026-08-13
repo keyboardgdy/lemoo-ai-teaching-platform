@@ -1,0 +1,34 @@
+name: Defect
+description: Report a reproducible defect without sensitive data.
+title: "[Defect] "
+labels: [defect]
+body:
+  - type: markdown
+    attributes:
+      value: Do not include secrets, device identities, customer names or personal data.
+  - type: input
+    id: requirement
+    attributes:
+      label: Requirement or work package
+      placeholder: PRD-DEV-001 / W2
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction
+      description: Provide deterministic, sanitized steps.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true

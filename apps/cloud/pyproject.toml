@@ -1,0 +1,88 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "lemoo-cloud"
+version = "0.1.0"
+description = "Lemoo education robot cloud process baseline."
+readme = "README.md"
+requires-python = ">=3.14,<3.15"
+dependencies = [
+  "alembic>=1.16,<2",
+  "boto3>=1.40,<2",
+  "dramatiq[redis]>=1.18,<2",
+  "fastapi[standard]>=0.116,<1",
+  "httpx>=0.28,<1",
+  "opentelemetry-api>=1.37,<2",
+  "opentelemetry-exporter-otlp>=1.37,<2",
+  "opentelemetry-instrumentation-fastapi>=0.58b0,<1",
+  "opentelemetry-instrumentation-httpx>=0.58b0,<1",
+  "opentelemetry-instrumentation-sqlalchemy>=0.58b0,<1",
+  "opentelemetry-sdk>=1.37,<2",
+  "orjson>=3.11,<4",
+  "paho-mqtt>=2.1,<3",
+  "prometheus-client>=0.23,<1",
+  "psycopg[binary,pool]>=3.2,<4",
+  "pwdlib[argon2]>=0.2,<1",
+  "pydantic>=2.11,<3",
+  "pydantic-settings>=2.10,<3",
+  "python-multipart>=0.0.20,<1",
+  "redis>=6.4,<7",
+  "sentry-sdk[fastapi]>=2.35,<3",
+  "sqlalchemy[asyncio]>=2.0.43,<3",
+  "structlog>=25.4,<26",
+  "tenacity>=9.1,<10",
+]
+
+[project.scripts]
+lem-api = "app.entrypoints.api:run"
+
+[dependency-groups]
+dev = [
+  "build>=1.3,<2",
+  "hypothesis>=6.138,<7",
+  "locust>=2.40,<3",
+  "pip-audit>=2.9,<3",
+  "polyfactory>=2.22,<3",
+  "pre-commit>=4.3,<5",
+  "pyright>=1.1.405,<2",
+  "pytest>=9.0.3,<10",
+  "pytest-asyncio>=1.1,<2",
+  "pytest-cov>=6.2,<7",
+  "respx>=0.22,<1",
+  "ruff>=0.12,<1",
+  "testcontainers>=4.12,<5",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["app"]
+
+[tool.ruff]
+target-version = "py314"
+line-length = 100
+extend-exclude = ["migrations/versions"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "ASYNC", "S", "RUF"]
+ignore = ["S101"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*.py" = ["S101"]
+
+[tool.pytest.ini_options]
+addopts = "--strict-config --strict-markers"
+testpaths = ["tests"]
+asyncio_mode = "auto"
+markers = [
+  "integration: requires the real Compose dependencies",
+]
+
+[tool.coverage.run]
+branch = true
+source = ["app"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
+fail_under = 90
