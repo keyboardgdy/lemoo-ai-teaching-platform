@@ -50,3 +50,5 @@ W5b 的 OpenAPI 3.1 Device API v1 与身份策略已由可执行测试冻结。�
 - Auth Fixture 是合成证书观察值，不包含私钥；W8 才会在运行时生成临时测试 CA/证书并执行真实 TLS 握手。
 - 本工作包没有实现 Device API Handler、真实 CA、硬件私钥存储、对象上传下载、真实设备或生产 Trust Store。
 - 本证据不是 G1/HIL、真实设备兼容、合规认证、生产授权或真实机构试点批准。
+
+2026-08-14 的 Device ID 契约勘误由跨 MQTT/Device API 的同一回归测试覆盖：仅 PILOT-001 的六个 Device Code 合法。

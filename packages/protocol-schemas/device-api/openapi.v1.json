@@ -300,7 +300,7 @@
     "schemas": {
       "DeviceId": {
         "type": "string",
-        "pattern": "^SIM-[AB]-00[1-4]$"
+        "pattern": "^SIM-(?:A-00[1-4]|B-00[1-2])$"
       },
       "EnrollmentRequest": {
         "type": "object",
@@ -311,7 +311,7 @@
           },
           "serial_number": {
             "type": "string",
-            "pattern": "^LEMO-SIM-[AB]-00[1-4]$"
+            "pattern": "^LEMO-SIM-(?:A-00[1-4]|B-00[1-2])$"
           },
           "csr_pem": {
             "type": "string",
@@ -362,7 +362,7 @@
           },
           "serial_number": {
             "type": "string",
-            "pattern": "^LEMO-SIM-[AB]-00[1-4]$"
+            "pattern": "^LEMO-SIM-(?:A-00[1-4]|B-00[1-2])$"
           },
           "attestation": {
             "const": "simulator-declaration-v1"

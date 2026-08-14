@@ -193,9 +193,9 @@ def test_device_id_patterns_match_exactly_the_six_pilot_devices() -> None:
     mqtt_pattern = load_json(MQTT / "envelope.v1.schema.json")["properties"][
         "device_id"
     ]["pattern"]
-    device_api_pattern = load_json(
-        ROOT / "device-api" / "openapi.v1.json"
-    )["components"]["schemas"]["DeviceId"]["pattern"]
+    device_api_pattern = load_json(ROOT / "device-api" / "openapi.v1.json")[
+        "components"
+    ]["schemas"]["DeviceId"]["pattern"]
 
     for pattern in (mqtt_pattern, device_api_pattern):
         assert all(re.fullmatch(pattern, device_id) for device_id in expected)
