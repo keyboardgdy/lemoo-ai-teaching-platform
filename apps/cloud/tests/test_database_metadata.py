@@ -76,7 +76,7 @@ def test_initial_migration_enables_and_forces_rls_and_immutable_audit() -> None:
     for table_name in sorted(TENANT_TABLES):
         assert f'ALTER TABLE "{table_name}" ENABLE ROW LEVEL SECURITY' in source
         assert f'ALTER TABLE "{table_name}" FORCE ROW LEVEL SECURITY' in source
-        assert f'tenant_isolation_{table_name}' in source
+        assert f"tenant_isolation_{table_name}" in source
     assert "prevent_audit_mutation" in source
     assert "PARTITION BY RANGE (received_at)" in source
     assert "device_telemetry_default" in source

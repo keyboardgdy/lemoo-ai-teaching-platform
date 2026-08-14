@@ -1,3 +1,24 @@
 # Migrations
 
-Alembic is locked as a dependency, but no business schema exists in W2. W6a must initialize migrations, empty-database upgrade tests, Reset/Seed and restore evidence as separate concerns. API and worker processes must never run migrations automatically.
+Stage 1A owns one Alembic history rooted at `0001_stage1a_core`. It creates the
+12 Simulator-only control-plane tables, a default telemetry partition, forced
+tenant RLS policies, and the append-only audit trigger.
+
+Run migrations explicitly from the repository root:
+
+```shell
+task migrate
+```
+
+Exercise the migration lifecycle against a real local PostgreSQL instance:
+
+```shell
+task infra:up
+task migrate:test
+```
+
+The test creates an isolated temporary database and role, then verifies empty
+upgrade, repeat upgrade, tenant isolation, fail-closed tenant context,
+append-only audit enforcement, downgrade, and re-upgrade. It removes only those
+generated test resources afterward. API and worker processes never run
+migrations automatically.

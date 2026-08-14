@@ -5,6 +5,7 @@ from typing import Literal
 
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from sqlalchemy.engine import URL
 
 
 class Settings(BaseSettings):
@@ -22,6 +23,11 @@ class Settings(BaseSettings):
     log_level: Literal["DEBUG", "INFO", "WARNING", "ERROR"] = "INFO"
     service_name: str = "lemoo-api"
     service_version: str = "0.1.0"
+    postgres_host: str = "127.0.0.1"
+    postgres_port: int = 54320
+    postgres_user: str = "lemoo"
+    postgres_password: str = Field(default="local-only-postgres-change-me", repr=False)
+    postgres_db: str = "lemoo"
     feature_content: bool = False
     feature_teaching: bool = False
     feature_ai: bool = False
@@ -41,6 +47,19 @@ class Settings(BaseSettings):
             "ota": self.feature_ota,
         }
         return tuple(name for name, enabled in flags.items() if enabled)
+
+    @property
+    def database_url(self) -> str:
+        """Return the local PostgreSQL URL; never log this value."""
+
+        return URL.create(
+            drivername="postgresql+psycopg",
+            username=self.postgres_user,
+            password=self.postgres_password,
+            host=self.postgres_host,
+            port=self.postgres_port,
+            database=self.postgres_db,
+        ).render_as_string(hide_password=False)
 
 
 @lru_cache(maxsize=1)
