@@ -32,6 +32,7 @@ Commit `71ba63a` 完成 API、PostgreSQL Adapter、合成 Seed、OpenAPI 与 Fet
 - `task migrate:test`：PASS；空库升级、重复升级、RLS、审计不可篡改、降级与
   再升级继续通过。
 
-本证据不代表 Vue 设备工作台、MQTT Runtime、Simulator、SSE、告警页面、E2E 或
-Gate 3-Sim 已完成；也不授权真实设备、真实机构、个人数据、外部 Provider、内容、
-教学、AI、诊断、批量命令、OTA 或生产。
+Vue 设备工作台由同目录的 `vue-device-workspace.md` 单独记录；本 API 证据本身不代表
+MQTT Runtime、Simulator、SSE、告警页面、E2E 或 Gate 3-Sim 已完成，也不授权真实
+设备、真实机构、个人数据、外部 Provider、内容、教学、AI、诊断、批量命令、OTA
+或生产。
