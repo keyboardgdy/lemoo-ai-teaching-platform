@@ -190,5 +190,17 @@ tasks:
       - uv run --project {{.CLOUD_PROJECT}} python scripts/test_migrations.py
   simulator:smoke:
     cmds: [{ cmd: 'uv run --project {{.CLOUD_PROJECT}} python scripts/gate_not_ready.py W8b simulator-smoke' }]
+  supply-chain:audit:
+    desc: Audit locked Python and production frontend dependencies.
+    cmds:
+      - uv run --project {{.CLOUD_PROJECT}} pip-audit
+      - pnpm audit --audit-level high --prod
+  image:evidence:
+    desc: Generate signed Stage 1A image, SBOM, scan, and provenance evidence.
+    cmds:
+      - uv run --project {{.CLOUD_PROJECT}} python scripts/supply_chain.py generate
   image:verify:
-    cmds: [{ cmd: 'uv run --project {{.CLOUD_PROJECT}} python scripts/gate_not_ready.py W7c image-verification' }]
+    desc: Build, scan, inventory, attest, sign, and negatively verify Stage 1A images.
+    cmds:
+      - task: supply-chain:audit
+      - task: image:evidence
