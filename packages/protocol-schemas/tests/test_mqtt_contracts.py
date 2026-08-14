@@ -53,8 +53,7 @@ def topic_matches(pattern: str, topic: str, device_id: str) -> bool:
     if len(pattern_segments) != len(topic_segments):
         return False
     return all(
-        expected == actual
-        or (expected == "{command_id}" and bool(actual))
+        expected == actual or (expected == "{command_id}" and bool(actual))
         for expected, actual in zip(pattern_segments, topic_segments, strict=True)
     )
 
