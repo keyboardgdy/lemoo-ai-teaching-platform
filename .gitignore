@@ -43,6 +43,7 @@ docs/.obsidian/
 
 # Runtime data
 .data/
+.tmp/
 *.log
 *.pid
 tmp/
