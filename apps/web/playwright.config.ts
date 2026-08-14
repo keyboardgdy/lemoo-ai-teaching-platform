@@ -14,7 +14,7 @@ export default defineConfig({
     launchOptions: executablePath ? { executablePath } : undefined,
     screenshot: 'only-on-failure',
     trace: 'retain-on-failure',
-    video: 'retain-on-failure',
+    video: process.env.CI ? 'off' : 'retain-on-failure',
   },
   webServer: [
     {
