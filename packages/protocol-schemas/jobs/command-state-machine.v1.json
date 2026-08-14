@@ -18,5 +18,13 @@
   "illegal_transition_behavior": "reject_and_audit",
   "late_ack_after_terminal_behavior": "record_observation_without_state_regression",
   "expiry_clock": "server_received_at",
+  "idempotency_key_scope": [
+    "organization_id",
+    "device_id",
+    "command_type"
+  ],
+  "duplicate_request_behavior": "return_existing_command",
+  "idempotency_conflict_behavior": "reject_and_audit",
+  "expired_create_behavior": "reject_without_outbox_effect",
   "device_revalidation_required": true
 }
