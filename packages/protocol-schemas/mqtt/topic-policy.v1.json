@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "status": "frozen",
+  "scope": "stage-1a-simulator-first",
+  "protocol": "MQTT-5.0",
+  "transport": "tcp-tls-mtls",
+  "identity": {
+    "source": "verified-client-certificate",
+    "client_id_must_equal_device_id": true,
+    "topic_payload_identity_must_match": true
+  },
+  "session": {
+    "clean_start": false,
+    "expiry_seconds": 86400,
+    "will_topic": "v1/devices/{device_id}/events",
+    "will_qos": 1,
+    "will_retain": false
+  },
+  "limits": {
+    "max_packet_bytes": 65536,
+    "max_inflight_qos1": 32,
+    "max_topic_depth": 7
+  },
+  "topics": {
+    "reported_shadow": { "qos": 1, "retain": true },
+    "telemetry": { "qos": 0, "retain": false },
+    "device_event": { "qos": 1, "retain": false },
+    "desired_shadow": { "qos": 1, "retain": true },
+    "command": { "qos": 1, "retain": false },
+    "command_ack": { "qos": 1, "retain": false }
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lemoo.dev/mqtt/device-event.v1.schema.json",
+  "title": "Device event message v1",
+  "x-lemoo": {
+    "status": "frozen",
+    "scope": "stage-1a-simulator-first",
+    "production_supported": false
+  },
+  "allOf": [
+    { "$ref": "https://schemas.lemoo.dev/mqtt/envelope.v1.schema.json" },
+    {
+      "properties": {
+        "schema": { "const": "lemoo.mqtt.device-event.v1" },
+        "payload": {
+          "type": "object",
+          "required": ["event_id", "event_type", "severity", "code", "occurred_at", "details"],
+          "properties": {
+            "event_id": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "event_type": { "enum": ["birth", "heartbeat", "fault", "recovered"] },
+            "severity": { "enum": ["info", "warning", "error"] },
+            "code": { "type": "string", "pattern": "^[A-Z][A-Z0-9_]{2,63}$" },
+            "occurred_at": { "type": "string", "format": "date-time" },
+            "details": {
+              "type": "object",
+              "maxProperties": 10,
+              "additionalProperties": { "type": ["string", "number", "integer", "boolean", "null"] }
+            }
+          },
+          "additionalProperties": false
+        }
+      }
+    }
+  ]
+}

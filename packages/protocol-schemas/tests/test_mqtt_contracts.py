@@ -48,13 +48,14 @@ def contract_fixtures(kind: str) -> Iterator[tuple[Path, dict[str, Any]]]:
 
 
 def topic_matches(pattern: str, topic: str, device_id: str) -> bool:
-    return pattern.replace("{device_id}", device_id).replace(
-        "{command_id}", "+"
-    ) == topic or (
-        pattern.endswith("/{command_id}/ack")
-        and topic.startswith(pattern.split("{command_id}", maxsplit=1)[0])
-        and topic.endswith("/ack")
-        and len(topic.split("/")) == len(pattern.split("/"))
+    pattern_segments = pattern.replace("{device_id}", device_id).split("/")
+    topic_segments = topic.split("/")
+    if len(pattern_segments) != len(topic_segments):
+        return False
+    return all(
+        expected == actual
+        or (expected == "{command_id}" and bool(actual))
+        for expected, actual in zip(pattern_segments, topic_segments, strict=True)
     )
 
 

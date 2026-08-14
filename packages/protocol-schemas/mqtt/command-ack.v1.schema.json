@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lemoo.dev/mqtt/command-ack.v1.schema.json",
+  "title": "Device command acknowledgement v1",
+  "x-lemoo": {
+    "status": "frozen",
+    "scope": "stage-1a-simulator-first",
+    "production_supported": false
+  },
+  "allOf": [
+    { "$ref": "https://schemas.lemoo.dev/mqtt/envelope.v1.schema.json" },
+    {
+      "properties": {
+        "schema": { "const": "lemoo.mqtt.command-ack.v1" },
+        "payload": {
+          "type": "object",
+          "required": ["command_id", "status", "occurred_at", "result", "error_code"],
+          "properties": {
+            "command_id": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "status": { "enum": ["accepted", "running", "succeeded", "failed", "expired", "rejected"] },
+            "occurred_at": { "type": "string", "format": "date-time" },
+            "result": { "type": ["object", "null"], "maxProperties": 10 },
+            "error_code": { "type": ["string", "null"], "maxLength": 64 }
+          },
+          "additionalProperties": false
+        }
+      }
+    }
+  ]
+}

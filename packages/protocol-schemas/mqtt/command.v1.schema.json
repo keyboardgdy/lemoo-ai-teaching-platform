@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lemoo.dev/mqtt/command.v1.schema.json",
+  "title": "Device command message v1",
+  "x-lemoo": {
+    "status": "frozen",
+    "scope": "stage-1a-simulator-first",
+    "production_supported": false
+  },
+  "allOf": [
+    { "$ref": "https://schemas.lemoo.dev/mqtt/envelope.v1.schema.json" },
+    {
+      "properties": {
+        "schema": { "const": "lemoo.mqtt.command.v1" },
+        "payload": {
+          "type": "object",
+          "required": ["command_id", "command_type", "issued_at", "expires_at", "reason", "requested_by", "parameters"],
+          "properties": {
+            "command_id": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+            },
+            "command_type": { "const": "refresh_shadow" },
+            "issued_at": { "type": "string", "format": "date-time" },
+            "expires_at": { "type": "string", "format": "date-time" },
+            "reason": { "type": "string", "minLength": 3, "maxLength": 240 },
+            "requested_by": { "type": "string", "pattern": "^USR-SIM-[A-Z0-9-]+$" },
+            "parameters": { "type": "object", "maxProperties": 0 }
+          },
+          "additionalProperties": false
+        }
+      }
+    }
+  ]
+}

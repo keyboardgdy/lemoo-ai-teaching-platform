@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "status": "frozen",
+  "accepted_topic_majors": [1],
+  "accepted_schema_suffixes": [".v1"],
+  "unknown_major_behavior": "reject_and_audit",
+  "unknown_field_behavior": "reject",
+  "duplicate_behavior": "ack_without_reapplying_business_effect",
+  "ordering_key": ["device_id", "boot_id", "sequence"],
+  "clock_policy": "persist_sent_at_and_server_received_at; order_by_sequence_within_boot"
+}

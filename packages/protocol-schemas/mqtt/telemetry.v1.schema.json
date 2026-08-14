@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lemoo.dev/mqtt/telemetry.v1.schema.json",
+  "title": "Telemetry message v1",
+  "x-lemoo": {
+    "status": "frozen",
+    "scope": "stage-1a-simulator-first",
+    "production_supported": false
+  },
+  "allOf": [
+    { "$ref": "https://schemas.lemoo.dev/mqtt/envelope.v1.schema.json" },
+    {
+      "properties": {
+        "schema": { "const": "lemoo.mqtt.telemetry.v1" },
+        "payload": {
+          "type": "object",
+          "required": ["metric", "value", "unit", "occurred_at"],
+          "properties": {
+            "metric": { "enum": ["battery_percent", "cpu_percent", "memory_percent", "temperature_c"] },
+            "value": { "type": "number", "minimum": -40, "maximum": 150 },
+            "unit": { "enum": ["percent", "celsius"] },
+            "occurred_at": { "type": "string", "format": "date-time" }
+          },
+          "additionalProperties": false
+        }
+      }
+    }
+  ]
+}

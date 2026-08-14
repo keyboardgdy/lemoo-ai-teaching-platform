@@ -1,0 +1,16 @@
+{
+  "contract": "reported-shadow",
+  "expected_error_contains": "False",
+  "message": {
+    "schema": "lemoo.mqtt.reported-shadow.v1",
+    "message_id": "0198f001-1000-7000-8000-000000000009",
+    "device_id": "SIM-A-001",
+    "boot_id": "boot-0001",
+    "sequence": 5,
+    "sent_at": "2026-08-14T00:00:04Z",
+    "firmware_version": "sim-1",
+    "is_physical_hardware": true,
+    "production_supported": false,
+    "payload": { "shadow_version": 2, "online": true, "last_seen_at": "2026-08-14T00:00:04Z", "app_version": "sim-1", "status": "ready" }
+  }
+}
