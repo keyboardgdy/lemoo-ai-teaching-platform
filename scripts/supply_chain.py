@@ -147,6 +147,8 @@ def verify_immutable_evidence(output: Path) -> None:
         observed_names.add(name)
         if digest != f"sha256:{digest_body}":
             raise RuntimeError(f"image digest mismatch: {name}")
+        if image.get("digest_source") != "BuildKit containerimage.digest":
+            raise RuntimeError(f"image digest source mismatch: {name}")
         if archive != f"{name}.image.tar":
             raise RuntimeError(f"image archive name mismatch: {name}")
         if not isinstance(user, str) or user in {
@@ -440,7 +442,7 @@ def _build_image(spec: ImageSpec, revision: str, output: Path) -> dict[str, str]
             "--platform",
             "linux/amd64",
             "--load",
-            "--provenance=mode=max",
+            "--provenance=false",
             "--build-arg",
             f"VCS_REF={revision}",
             "--metadata-file",
@@ -468,24 +470,38 @@ def _build_image(spec: ImageSpec, revision: str, output: Path) -> dict[str, str]
     labels = cast(dict[str, object], config.get("Labels"))
     if labels.get("org.opencontainers.image.revision") != revision:
         raise RuntimeError(f"image revision label mismatch: {spec.name}")
-    repo_digests = cast(list[object], image.get("RepoDigests"))
-    prefix = f"{spec.name}@sha256:"
-    references = [
-        item
-        for item in repo_digests
-        if isinstance(item, str) and item.startswith(prefix)
-    ]
-    if len(references) != 1:
-        raise RuntimeError(
-            f"image does not have exactly one immutable digest: {spec.name}"
-        )
-    digest = f"sha256:{require_digest_reference(references[0])}"
+    build_metadata = _read_json_object(metadata)
+    digest = build_metadata.get("containerimage.digest")
+    descriptor = build_metadata.get("containerimage.descriptor")
+    if not isinstance(digest, str):
+        raise TypeError(f"BuildKit image digest is missing: {spec.name}")
+    reference = f"{spec.name}@{digest}"
+    require_digest_reference(reference)
+    if (
+        not isinstance(descriptor, dict)
+        or cast(dict[object, object], descriptor).get("digest") != digest
+    ):
+        raise RuntimeError(f"BuildKit image descriptor mismatch: {spec.name}")
+    repo_digests = image.get("RepoDigests")
+    if repo_digests is not None:
+        if not isinstance(repo_digests, list):
+            raise TypeError(f"unexpected Docker RepoDigests response: {spec.name}")
+        relevant_references = [
+            item
+            for item in cast(list[object], repo_digests)
+            if isinstance(item, str) and item.startswith(f"{spec.name}@")
+        ]
+        if relevant_references and reference not in relevant_references:
+            raise RuntimeError(
+                f"Docker and BuildKit image digests disagree: {spec.name}"
+            )
     archive = output / f"{spec.name}.image.tar"
     _run(["docker", "image", "save", "--output", str(archive), tag])
     return {
         "tag": tag,
-        "reference": references[0],
+        "reference": reference,
         "digest": digest,
+        "digest_source": "BuildKit containerimage.digest",
         "archive": archive.name,
         "user": user,
     }

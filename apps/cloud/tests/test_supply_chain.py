@@ -137,6 +137,7 @@ def _write_independent_evidence(root: Path) -> None:
             {
                 "archive": archive.name,
                 "digest": f"sha256:{digest}",
+                "digest_source": "BuildKit containerimage.digest",
                 "reference": f"{spec.name}@sha256:{digest}",
                 "tag": f"{spec.name}:test",
                 "user": "10001:10001",
