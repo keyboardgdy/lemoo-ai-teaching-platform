@@ -157,7 +157,10 @@ tasks:
     cmds:
       - uv run --project {{.CLOUD_PROJECT}} pytest packages/protocol-schemas/tests -q
   test:e2e:
-    cmds: [{ cmd: 'uv run --project {{.CLOUD_PROJECT}} python scripts/gate_not_ready.py Gate-3-Sim playwright-e2e' }]
+    desc: Seed the fixed simulator fleet and run the browser acceptance path.
+    cmds:
+      - task: seed
+      - pnpm --filter {{.WEB_PACKAGE}} test:e2e
   test:rls:
     cmds:
       - uv run --project {{.CLOUD_PROJECT}} python scripts/test_migrations.py

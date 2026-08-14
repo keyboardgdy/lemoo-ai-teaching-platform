@@ -13,6 +13,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import Settings
+from app.infrastructure.database.metadata import metadata as registered_metadata
 from app.infrastructure.database.session import (
     create_engine,
     create_session_factory,
@@ -55,6 +56,18 @@ from app.modules.identity.public import (
     ensure_organization_access,
 )
 from app.modules.jobs.models import OutboxEventModel
+
+_CONTROL_PLANE_TABLES = {
+    "organizations",
+    "devices",
+    "device_commands",
+    "audit_events",
+    "outbox_events",
+}
+_missing_tables = _CONTROL_PLANE_TABLES.difference(registered_metadata.tables)
+if _missing_tables:
+    missing = ", ".join(sorted(_missing_tables))
+    raise RuntimeError(f"Incomplete SQLAlchemy model registry: {missing}")
 
 
 def _encode_cursor(code: str, device_id: UUID) -> str:

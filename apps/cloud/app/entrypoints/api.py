@@ -1,5 +1,7 @@
 """FastAPI composition root for the Stage 1A Simulator-only control plane."""
 
+import asyncio
+import sys
 from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 from typing import Any, cast
@@ -146,10 +148,16 @@ app = create_app()
 def run() -> None:
     """Run the local development API."""
 
-    uvicorn.run(
+    config = uvicorn.Config(
         "app.entrypoints.api:app",
         host="127.0.0.1",
         port=8000,
         reload=False,
         access_log=False,
     )
+    server = uvicorn.Server(config)
+    if sys.platform == "win32":
+        # Psycopg async explicitly does not support Windows' ProactorEventLoop.
+        asyncio.run(server.serve(), loop_factory=asyncio.SelectorEventLoop)
+        return
+    server.run()

@@ -85,9 +85,66 @@ jobs:
   compose:
     name: compose
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
-      - run: docker compose --env-file .env.example config --quiet
+      - uses: astral-sh/setup-uv@94527f2e458b27549849d47d273a16bec83a01e9 # v7
+        with:
+          version: "0.12.2"
+          python-version: "3.14"
+          enable-cache: true
+      - uses: go-task/setup-task@a00fbb05ce67b35648be3c78cbc9fd85354c757e # v2
+        with:
+          version: 3.46.4
+      - run: uv sync --project apps/cloud --locked
+      - run: cp .env.example .env
+      - run: task infra:up
+      - if: always()
+        run: task infra:down
+
+  e2e:
+    name: e2e
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      LEMOO_ENVIRONMENT: ci
+    services:
+      postgresql:
+        image: postgres:18.3-alpine
+        env:
+          POSTGRES_USER: lemoo
+          POSTGRES_PASSWORD: local-only-postgres-change-me
+          POSTGRES_DB: lemoo
+        ports:
+          - 54320:5432
+        options: >-
+          --health-cmd "pg_isready -U lemoo -d lemoo"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 12
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: astral-sh/setup-uv@94527f2e458b27549849d47d273a16bec83a01e9 # v7
+        with:
+          version: "0.12.2"
+          python-version: "3.14"
+          enable-cache: true
+      - uses: pnpm/action-setup@ff378ebe6b225b0680b81c1ad4498ae0d1d3a5e3 # v6.0.10
+        with:
+          version: 11.2.2
+          run_install: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+      - uses: go-task/setup-task@a00fbb05ce67b35648be3c78cbc9fd85354c757e # v2
+        with:
+          version: 3.46.4
+      - run: uv sync --project apps/cloud --locked
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm --filter @lemoo/web exec playwright install --with-deps chromium
+      - run: task test:e2e
 
   security:
     name: security
