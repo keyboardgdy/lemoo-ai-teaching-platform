@@ -123,8 +123,8 @@ tasks:
       - uv run --project {{.CLOUD_PROJECT}} python scripts/check_schemas.py
 
   verify:
-    desc: Execute all checks required to complete W2.
-    deps: [lint, typecheck, test, build, docs:check, repo:check, schemas:check, infra:config]
+    desc: Execute all repository quality gates available for the current stage.
+    deps: [lint, typecheck, test, test:protocol, build, docs:check, repo:check, schemas:check, infra:config]
 
   test:integration:
     cmds: [{ cmd: 'uv run --project {{.CLOUD_PROJECT}} python scripts/gate_not_ready.py G2-Device integration-tests' }]

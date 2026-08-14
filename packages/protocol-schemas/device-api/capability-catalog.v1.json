@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "status": "frozen",
+  "scope": "stage-1a-simulator-first",
+  "stage_1a_enabled": {
+    "provision": true,
+    "binding": true,
+    "certificate_rotation": true,
+    "certificate_status": true,
+    "server_time": true,
+    "upload_url": false,
+    "download_url": false
+  },
+  "disabled_transfer_purposes": [
+    "content",
+    "diagnostics",
+    "firmware",
+    "student_audio"
+  ],
+  "disabled_response": {
+    "status": 403,
+    "code": "capability_not_enabled"
+  }
+}

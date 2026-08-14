@@ -28,7 +28,7 @@ jobs:
         with:
           version: 3.46.4
       - run: uv sync --project apps/cloud --locked
-      - run: task docs:check repo:check schemas:check
+      - run: task docs:check repo:check schemas:check test:protocol
 
   backend:
     name: backend

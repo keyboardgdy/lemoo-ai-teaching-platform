@@ -1,0 +1,15 @@
+{
+  "presented_scheme": "DeviceMtls",
+  "path_device_id": "SIM-B-001",
+  "server_time": "2026-08-14T01:00:00Z",
+  "certificate": {
+    "issuer": "CN=Lemoo Stage1A Simulator Device CA",
+    "device_id": "SIM-A-001",
+    "san_uri": "spiffe://sim.lemoo.invalid/devices/SIM-A-001",
+    "not_before": "2026-08-13T00:00:00Z",
+    "not_after": "2026-08-15T00:00:00Z",
+    "status": "active"
+  },
+  "allowed": false,
+  "reason": "path_identity_mismatch"
+}
