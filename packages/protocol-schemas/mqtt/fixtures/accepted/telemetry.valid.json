@@ -1,0 +1,20 @@
+{
+  "contract": "telemetry",
+  "message": {
+    "schema": "lemoo.mqtt.telemetry.v1",
+    "message_id": "0198f001-1000-7000-8000-000000000002",
+    "device_id": "SIM-A-001",
+    "boot_id": "boot-0001",
+    "sequence": 2,
+    "sent_at": "2026-08-14T00:00:01Z",
+    "firmware_version": "sim-1",
+    "is_physical_hardware": false,
+    "production_supported": false,
+    "payload": {
+      "metric": "battery_percent",
+      "value": 87.5,
+      "unit": "percent",
+      "occurred_at": "2026-08-14T00:00:01Z"
+    }
+  }
+}

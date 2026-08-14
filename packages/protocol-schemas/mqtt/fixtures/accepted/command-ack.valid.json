@@ -1,0 +1,21 @@
+{
+  "contract": "command-ack",
+  "message": {
+    "schema": "lemoo.mqtt.command-ack.v1",
+    "message_id": "0198f001-1000-7000-8000-000000000005",
+    "device_id": "SIM-A-002",
+    "boot_id": "boot-0003",
+    "sequence": 11,
+    "sent_at": "2026-08-14T00:02:01Z",
+    "firmware_version": "sim-1",
+    "is_physical_hardware": false,
+    "production_supported": false,
+    "payload": {
+      "command_id": "0198f001-3000-7000-8000-000000000001",
+      "status": "accepted",
+      "occurred_at": "2026-08-14T00:02:01Z",
+      "result": null,
+      "error_code": null
+    }
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "contract": "command",
+  "message": {
+    "schema": "lemoo.mqtt.command.v1",
+    "message_id": "0198f001-1000-7000-8000-000000000004",
+    "device_id": "SIM-A-002",
+    "boot_id": "boot-0003",
+    "sequence": 10,
+    "sent_at": "2026-08-14T00:02:00Z",
+    "firmware_version": "sim-1",
+    "is_physical_hardware": false,
+    "production_supported": false,
+    "payload": {
+      "command_id": "0198f001-3000-7000-8000-000000000001",
+      "command_type": "refresh_shadow",
+      "issued_at": "2026-08-14T00:02:00Z",
+      "expires_at": "2026-08-14T00:03:00Z",
+      "reason": "Refresh simulator shadow",
+      "requested_by": "USR-SIM-A-OPS",
+      "parameters": {}
+    }
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "contract": "device-event",
+  "message": {
+    "schema": "lemoo.mqtt.device-event.v1",
+    "message_id": "0198f001-1000-7000-8000-000000000003",
+    "device_id": "SIM-B-001",
+    "boot_id": "boot-0002",
+    "sequence": 1,
+    "sent_at": "2026-08-14T00:01:00Z",
+    "firmware_version": "sim-1",
+    "is_physical_hardware": false,
+    "production_supported": false,
+    "payload": {
+      "event_id": "0198f001-2000-7000-8000-000000000001",
+      "event_type": "birth",
+      "severity": "info",
+      "code": "DEVICE_BIRTH",
+      "occurred_at": "2026-08-14T00:01:00Z",
+      "details": { "reason": "simulator_start" }
+    }
+  }
+}

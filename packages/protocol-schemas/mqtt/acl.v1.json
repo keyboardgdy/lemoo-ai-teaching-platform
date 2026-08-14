@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "status": "frozen",
+  "identity_source": "verified-client-certificate",
+  "default": "deny",
+  "wildcards_allowed_for_device": false,
+  "device": {
+    "publish": [
+      "v1/devices/{device_id}/state/reported",
+      "v1/devices/{device_id}/telemetry",
+      "v1/devices/{device_id}/events",
+      "v1/devices/{device_id}/commands/{command_id}/ack"
+    ],
+    "subscribe": [
+      "v1/devices/{device_id}/state/desired",
+      "v1/devices/{device_id}/commands"
+    ]
+  },
+  "service": {
+    "gateway_subscribe": ["$share/lemoo-gateway/v1/devices/+/state/reported", "$share/lemoo-gateway/v1/devices/+/telemetry", "$share/lemoo-gateway/v1/devices/+/events", "$share/lemoo-gateway/v1/devices/+/commands/+/ack"],
+    "dispatcher_publish": ["v1/devices/+/state/desired", "v1/devices/+/commands"]
+  }
+}

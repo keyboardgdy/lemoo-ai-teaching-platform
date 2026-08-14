@@ -1,0 +1,1 @@
+{ "identity": "SIM-A-003", "action": "subscribe", "topic": "v1/devices/SIM-A-003/state/desired", "allowed": true }

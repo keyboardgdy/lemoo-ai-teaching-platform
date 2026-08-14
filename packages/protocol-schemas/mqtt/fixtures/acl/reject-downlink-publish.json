@@ -1,0 +1,1 @@
+{ "identity": "SIM-A-001", "action": "publish", "topic": "v1/devices/SIM-A-001/commands", "allowed": false }

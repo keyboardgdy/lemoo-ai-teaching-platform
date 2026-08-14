@@ -129,7 +129,8 @@ tasks:
   test:integration:
     cmds: [{ cmd: 'uv run --project {{.CLOUD_PROJECT}} python scripts/gate_not_ready.py G2-Device integration-tests' }]
   test:protocol:
-    cmds: [{ cmd: 'uv run --project {{.CLOUD_PROJECT}} python scripts/gate_not_ready.py G2-Device protocol-tests' }]
+    cmds:
+      - uv run --project {{.CLOUD_PROJECT}} pytest packages/protocol-schemas/tests -q
   test:e2e:
     cmds: [{ cmd: 'uv run --project {{.CLOUD_PROJECT}} python scripts/gate_not_ready.py Gate-3-Sim playwright-e2e' }]
   test:rls:

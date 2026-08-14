@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lemoo.dev/mqtt/reported-shadow.v1.schema.json",
+  "title": "Reported shadow message v1",
+  "x-lemoo": {
+    "status": "frozen",
+    "scope": "stage-1a-simulator-first",
+    "production_supported": false
+  },
+  "allOf": [
+    { "$ref": "https://schemas.lemoo.dev/mqtt/envelope.v1.schema.json" },
+    {
+      "properties": {
+        "schema": { "const": "lemoo.mqtt.reported-shadow.v1" },
+        "payload": {
+          "type": "object",
+          "required": ["shadow_version", "online", "last_seen_at", "app_version", "status"],
+          "properties": {
+            "shadow_version": { "type": "integer", "minimum": 1 },
+            "online": { "type": "boolean" },
+            "last_seen_at": { "type": "string", "format": "date-time" },
+            "app_version": { "const": "sim-1" },
+            "status": { "enum": ["ready", "degraded", "error"] }
+          },
+          "additionalProperties": false
+        }
+      }
+    }
+  ]
+}

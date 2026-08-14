@@ -1,0 +1,25 @@
+{
+  "contract": "command",
+  "expected_error_contains": "Additional properties",
+  "message": {
+    "schema": "lemoo.mqtt.command.v1",
+    "message_id": "0198f001-1000-7000-8000-000000000011",
+    "device_id": "SIM-A-002",
+    "boot_id": "boot-0003",
+    "sequence": 13,
+    "sent_at": "2026-08-14T00:02:03Z",
+    "firmware_version": "sim-1",
+    "is_physical_hardware": false,
+    "production_supported": false,
+    "payload": {
+      "command_id": "0198f001-3000-7000-8000-000000000003",
+      "command_type": "refresh_shadow",
+      "issued_at": "2026-08-14T00:02:03Z",
+      "expires_at": "2026-08-14T00:03:03Z",
+      "reason": "Unknown field must fail closed",
+      "requested_by": "USR-SIM-A-OPS",
+      "parameters": {},
+      "arbitrary_url": "https://invalid.example"
+    }
+  }
+}
