@@ -1,5 +1,9 @@
 # OpenAPI status
 
-Status: `skeleton`
+Status: `stage_1a_web_frozen`
 
-W2 may export only the health-only FastAPI OpenAPI 3.1 document. Device and Web product APIs remain absent until their requirements and G2 contracts are approved.
+The exported OpenAPI 3.1 document is authoritative for the Stage 1A
+Simulator-only browser boundary: synthetic sessions, device list/detail and the
+single-device `refresh_shadow` command. Device mTLS remains a separate contract
+under `packages/protocol-schemas/device-api`. Content, teaching, AI,
+diagnostics, bulk commands, OTA and production surfaces remain absent.

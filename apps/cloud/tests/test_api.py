@@ -1,4 +1,4 @@
-"""Contract tests for the non-business health surface."""
+"""Contract tests for the non-sensitive health surface."""
 
 from typing import cast
 
@@ -27,7 +27,7 @@ async def test_health_endpoints_expose_only_non_sensitive_skeleton_metadata() ->
         "service": "lemoo-api-test",
         "version": "0.1.0",
         "environment": "test",
-        "mode": "skeleton",
+        "mode": "simulator-only",
     }
     assert ready_payload["status"] == "ready"
     assert "database" not in ready_payload

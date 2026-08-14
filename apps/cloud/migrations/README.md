@@ -10,6 +10,14 @@ Run migrations explicitly from the repository root:
 task migrate
 ```
 
+For the local application, provision the constrained runtime role and seed the
+fixed synthetic pilot facts:
+
+```shell
+task database:setup
+task seed
+```
+
 Exercise the migration lifecycle against a real local PostgreSQL instance:
 
 ```shell
