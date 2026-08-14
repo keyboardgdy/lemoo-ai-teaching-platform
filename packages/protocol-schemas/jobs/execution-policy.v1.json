@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "status": "frozen",
+  "delivery": "at_least_once_business_idempotent",
+  "duplicate_job_id_behavior": "return_existing_progress_or_result",
+  "expired_deadline_behavior": "mark_timed_out_without_execution",
+  "cancel_queued_behavior": "mark_cancelled_without_execution",
+  "cancel_running_behavior": "request_cooperative_cancel_then_timeout",
+  "progress_regression_behavior": "ignore_and_audit",
+  "terminal_result_behavior": "immutable",
+  "retry": {
+    "strategy": "bounded_exponential_full_jitter",
+    "base_seconds": 1,
+    "max_seconds": 60,
+    "dead_letter_after_catalog_max_attempts": true
+  },
+  "error_retryability": {
+    "authorization": false,
+    "cancelled": false,
+    "conflict": false,
+    "dependency_permanent": false,
+    "dependency_transient": true,
+    "timeout": true,
+    "unknown_job_type": false,
+    "validation": false
+  },
+  "outbox": {
+    "claim": "for_update_skip_locked",
+    "lease_seconds": 30,
+    "batch_size": 100,
+    "max_attempts": 10,
+    "duplicate_delivery_behavior": "consumer_deduplicates_by_event_or_business_id"
+  }
+}

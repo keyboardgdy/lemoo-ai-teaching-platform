@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lemoo.dev/jobs/outbox-event.v1.schema.json",
+  "title": "Stage 1A Outbox event v1",
+  "x-lemoo": {
+    "status": "frozen",
+    "scope": "stage-1a-simulator-first",
+    "production_supported": false
+  },
+  "type": "object",
+  "required": ["schema", "event_id", "event_type", "schema_version", "aggregate_type", "aggregate_id", "organization_id", "occurred_at", "available_at", "attempt_count", "state", "payload", "production_supported"],
+  "properties": {
+    "schema": { "const": "lemoo.outbox.event.v1" },
+    "event_id": { "$ref": "#/$defs/uuid" },
+    "event_type": { "enum": ["device.command.created", "device.command.state_changed", "device.presence.changed"] },
+    "schema_version": { "const": 1 },
+    "aggregate_type": { "enum": ["device_command", "device"] },
+    "aggregate_id": { "$ref": "#/$defs/uuid" },
+    "organization_id": { "type": "string", "pattern": "^ORG-SIM-[AB]$" },
+    "occurred_at": { "type": "string", "format": "date-time" },
+    "available_at": { "type": "string", "format": "date-time" },
+    "attempt_count": { "type": "integer", "minimum": 0, "maximum": 10 },
+    "state": { "enum": ["pending", "claimed", "dispatched", "dead_letter"] },
+    "last_error_code": { "type": ["string", "null"], "pattern": "^[a-z][a-z0-9_]+$" },
+    "payload": { "type": "object", "maxProperties": 6 },
+    "production_supported": { "const": false }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "uuid": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "status": "frozen",
+  "scope": "stage-1a-simulator-first",
+  "unknown_job_type_behavior": "dead_letter_without_execution",
+  "disabled_prefixes": ["ai.", "content.", "diagnostics.", "ota.", "teaching."],
+  "jobs": {
+    "device.command.dispatch": {
+      "queue": "operations.command",
+      "max_attempts": 5,
+      "timeout_seconds": 15,
+      "payload_max_bytes": 2048
+    },
+    "device.command.expire": {
+      "queue": "maintenance",
+      "max_attempts": 3,
+      "timeout_seconds": 10,
+      "payload_max_bytes": 2048
+    },
+    "device.presence.reconcile": {
+      "queue": "maintenance",
+      "max_attempts": 3,
+      "timeout_seconds": 30,
+      "payload_max_bytes": 4096
+    }
+  }
+}

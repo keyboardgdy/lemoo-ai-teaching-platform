@@ -1,0 +1,113 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lemoo.dev/jobs/job-envelope.v1.schema.json",
+  "title": "Stage 1A Job envelope v1",
+  "x-lemoo": {
+    "status": "frozen",
+    "scope": "stage-1a-simulator-first",
+    "production_supported": false
+  },
+  "type": "object",
+  "required": [
+    "schema",
+    "job_type",
+    "schema_version",
+    "job_id",
+    "organization_id",
+    "aggregate_id",
+    "requested_by",
+    "idempotency_key",
+    "created_at",
+    "deadline_at",
+    "attempt",
+    "production_supported",
+    "payload"
+  ],
+  "properties": {
+    "schema": { "const": "lemoo.job.envelope.v1" },
+    "job_type": {
+      "enum": [
+        "device.command.dispatch",
+        "device.command.expire",
+        "device.presence.reconcile"
+      ]
+    },
+    "schema_version": { "const": 1 },
+    "job_id": { "$ref": "#/$defs/uuid" },
+    "organization_id": { "$ref": "#/$defs/organization_id" },
+    "aggregate_id": { "$ref": "#/$defs/uuid" },
+    "requested_by": {
+      "type": "string",
+      "pattern": "^(USR-SIM-[A-Z0-9-]+|SYSTEM)$"
+    },
+    "idempotency_key": { "$ref": "#/$defs/uuid" },
+    "created_at": { "type": "string", "format": "date-time" },
+    "deadline_at": { "type": "string", "format": "date-time" },
+    "attempt": { "type": "integer", "minimum": 1, "maximum": 5 },
+    "traceparent": {
+      "type": "string",
+      "pattern": "^00-[0-9a-f]{32}-[0-9a-f]{16}-0[01]$"
+    },
+    "production_supported": { "const": false },
+    "payload": { "type": "object" }
+  },
+  "allOf": [
+    {
+      "if": { "properties": { "job_type": { "const": "device.command.dispatch" } } },
+      "then": {
+        "properties": {
+          "payload": {
+            "type": "object",
+            "required": ["command_id", "device_id"],
+            "properties": {
+              "command_id": { "$ref": "#/$defs/uuid" },
+              "device_id": { "$ref": "#/$defs/device_id" }
+            },
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "job_type": { "const": "device.command.expire" } } },
+      "then": {
+        "properties": {
+          "payload": {
+            "type": "object",
+            "required": ["command_id", "evaluated_at"],
+            "properties": {
+              "command_id": { "$ref": "#/$defs/uuid" },
+              "evaluated_at": { "type": "string", "format": "date-time" }
+            },
+            "additionalProperties": false
+          }
+        }
+      }
+    },
+    {
+      "if": { "properties": { "job_type": { "const": "device.presence.reconcile" } } },
+      "then": {
+        "properties": {
+          "payload": {
+            "type": "object",
+            "required": ["device_id", "offline_cutoff_at"],
+            "properties": {
+              "device_id": { "$ref": "#/$defs/device_id" },
+              "offline_cutoff_at": { "type": "string", "format": "date-time" }
+            },
+            "additionalProperties": false
+          }
+        }
+      }
+    }
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "uuid": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+    },
+    "organization_id": { "type": "string", "pattern": "^ORG-SIM-[AB]$" },
+    "device_id": { "type": "string", "pattern": "^SIM-[AB]-00[1-4]$" }
+  }
+}

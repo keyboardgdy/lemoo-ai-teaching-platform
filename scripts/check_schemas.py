@@ -7,7 +7,7 @@ from pathlib import Path
 REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
 EXPECTED = {
     "packages/openapi/_STATUS.md": "Status: `skeleton`",
-    "packages/protocol-schemas/_STATUS.md": "Status: `partial_stage_1a`",
+    "packages/protocol-schemas/_STATUS.md": "Status: `stage_1a_core_frozen`",
     "packages/content-package-schema/_STATUS.md": "Status: `disabled`",
 }
 
