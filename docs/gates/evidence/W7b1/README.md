@@ -31,6 +31,11 @@
   2 条场景全部通过。
 - Fix Commit `3975185`：全仓验证证明 Vitest 会误收集 `e2e/*.spec.ts`；将 Vitest 与
   Playwright 的测试目录显式隔离后，两个门禁各自独立通过。
+- CI Fix Commit `e35c56b`：首次 Linux 运行证明 file-backed Compose secret 的宿主
+  `0600` UID 阻止非 root EMQX 读取私钥，同时 Playwright CDN 返回地域 403；改为受限
+  init 容器准备私钥权限，并使用 runner 预装 Chrome。
+- CI Fix Commit `b8014f0`：第二次 Linux E2E 已启动系统 Chrome，但失败录像仍查找
+  Playwright 自带 FFmpeg；CI 保留截图与 trace、关闭录像依赖后真实场景通过。
 
 ## 本地验证
 
@@ -43,11 +48,14 @@
 - `task test:e2e`：PASS，2 项真实浏览器场景通过。
 - `task migrate:test`：PASS；空库升级、重复升级、降级后升级、RLS 与不可变审计均通过。
 
-## 尚待 PR CI 固化的证据
+## PR CI 证据
 
-本地 Windows 结果已经完成。Linux `e2e`、真实 Compose 启动与 mTLS smoke 必须在本分支
-PR 的独立检查中通过后，W7b1 才满足跨平台退出条件；不得用本地结果替代该检查。W7b4
-将依据 01 的完整权威集合统一分支保护，本切片不提前改变 Required Check 集合。
+[GitHub Actions run 31767498843](https://github.com/keyboardgdy/lemoo-ai-teaching-platform/actions/runs/31767498843)
+在 PR #19 的 Linux runner 上通过全部 6 项独立检查：`backend`、`frontend`、
+`governance`、`security`、`compose` 与 `e2e`。其中 `compose` 完成真实四容器健康等待和
+TLS smoke；`e2e` 完成数据库迁移/角色/种子及 2 项真实 Chrome 场景。W7b1 跨平台退出
+条件已满足。W7b4 将依据 01 的完整权威集合统一分支保护，本切片不提前改变 Required
+Check 集合。
 
 本证据不授权生产部署、真实设备/机构/个人数据或生产 Secret，也不启用 Content、
 Teaching、AI、Diagnostics、Bulk Command 或 OTA。

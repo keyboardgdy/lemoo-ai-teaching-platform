@@ -40,9 +40,10 @@ Client ID 绑定、ACL 与吊销属于 W8a/W8b。
   前端 SFC 语句/行 99.24%、分支 92.30%、函数 100%；格式、Lint、类型、Build、
   Docs、Repo、Compose、Schema/OpenAPI 和 Orval 漂移检查全部通过。
 
-本机 Windows 重建验证已完成。Linux CI 的真实 Compose 启动与 mTLS smoke 不能在 W7a
-中修改既有 CI 门禁，将由紧随其后的 W7b1 Required Check 切片补齐；在该证据产生前，
-W7a 不宣称跨平台退出条件完全通过。
+本机 Windows 重建验证已完成。W7b1 在
+[GitHub Actions run 31767498843](https://github.com/keyboardgdy/lemoo-ai-teaching-platform/actions/runs/31767498843)
+补齐 Linux 真实 Compose 启动与 mTLS smoke，独立 `compose` 检查通过；W7a 跨平台退出
+条件已满足。
 
 本证据不授权生产部署、生产 CA/Secret、真实设备/机构/个人数据，也不启用 Content、
 Teaching、AI、Diagnostics、Bulk Command 或 OTA。
