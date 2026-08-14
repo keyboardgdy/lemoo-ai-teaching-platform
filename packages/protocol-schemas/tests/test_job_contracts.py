@@ -121,7 +121,9 @@ def test_execution_policy_freezes_retry_cancel_timeout_and_recovery() -> None:
     assert policy["duplicate_job_id_behavior"] == "return_existing_progress_or_result"
     assert policy["expired_deadline_behavior"] == "mark_timed_out_without_execution"
     assert policy["cancel_queued_behavior"] == "mark_cancelled_without_execution"
-    assert policy["cancel_running_behavior"] == "request_cooperative_cancel_then_timeout"
+    assert (
+        policy["cancel_running_behavior"] == "request_cooperative_cancel_then_timeout"
+    )
     assert policy["progress_regression_behavior"] == "ignore_and_audit"
     assert policy["terminal_result_behavior"] == "immutable"
     assert policy["retry"] == {
@@ -177,3 +179,11 @@ def test_command_state_machine_rejects_illegal_and_terminal_regression() -> None
     )
     assert machine["expiry_clock"] == "server_received_at"
     assert machine["device_revalidation_required"] is True
+    assert machine["idempotency_key_scope"] == [
+        "organization_id",
+        "device_id",
+        "command_type",
+    ]
+    assert machine["duplicate_request_behavior"] == "return_existing_command"
+    assert machine["idempotency_conflict_behavior"] == "reject_and_audit"
+    assert machine["expired_create_behavior"] == "reject_without_outbox_effect"
