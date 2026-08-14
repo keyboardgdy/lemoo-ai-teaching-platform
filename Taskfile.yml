@@ -17,6 +17,12 @@ tasks:
       - uv sync --project {{.CLOUD_PROJECT}} --locked
       - pnpm install --frozen-lockfile
       - uv run --project {{.CLOUD_PROJECT}} python scripts/bootstrap.py
+      - task: pki:generate
+
+  pki:generate:
+    desc: Create or reuse the ignored local-only development PKI.
+    cmds:
+      - uv run --project {{.CLOUD_PROJECT}} python scripts/generate_dev_pki.py
 
   infra:config:
     desc: Validate the local Compose model without starting containers.
@@ -25,11 +31,18 @@ tasks:
 
   infra:up:
     desc: Start the local core dependency profile.
+    deps: [pki:generate]
     preconditions:
       - sh: test -f .env
         msg: Run task bootstrap first to create the untracked local .env file.
     cmds:
       - docker compose --env-file .env --profile core up -d --wait
+      - task: infra:smoke
+
+  infra:smoke:
+    desc: Verify the local EMQX mTLS listener with the development smoke identity.
+    cmds:
+      - uv run --project {{.CLOUD_PROJECT}} python scripts/check_local_tls.py
 
   infra:down:
     desc: Stop local services while preserving named data volumes.
