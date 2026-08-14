@@ -148,7 +148,7 @@ tasks:
 
   verify:
     desc: Execute all repository quality gates available for the current stage.
-    deps: [lint, typecheck, test, test:protocol, build, frontend:api:check, docs:check, repo:check, schemas:check, infra:config]
+    deps: [backend:verify, frontend:verify, test:protocol, docs:check, repo:check, schemas:check, infra:config]
 
   test:integration:
     cmds:
