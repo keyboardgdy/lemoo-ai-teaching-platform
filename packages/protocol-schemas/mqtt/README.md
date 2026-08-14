@@ -14,5 +14,7 @@ Compatibility rules:
 - Unknown topic or schema major is rejected and audited.
 - Additive optional fields require a new compatible schema revision; this frozen schema uses `additionalProperties=false` so unreviewed fields fail closed.
 - Breaking changes create `v2`; v1 files and fixtures are never rewritten to carry new semantics.
+- A repeated message is acknowledged without applying its business effect twice. A lower sequence in the same boot may be retained as an observation but cannot regress current state; a new `boot_id` starts a new ordering stream.
+- Commands whose `expires_at` is not later than server receipt time are rejected with an `expired` ACK. Packets over 65,536 bytes are rejected before schema validation and audited.
 
 Run `task test:protocol` to validate all schemas, policies, and fixtures.

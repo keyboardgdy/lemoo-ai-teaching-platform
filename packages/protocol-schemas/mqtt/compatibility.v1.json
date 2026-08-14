@@ -6,6 +6,10 @@
   "unknown_major_behavior": "reject_and_audit",
   "unknown_field_behavior": "reject",
   "duplicate_behavior": "ack_without_reapplying_business_effect",
+  "out_of_order_behavior": "persist_observation_without_regressing_current_state",
+  "new_boot_behavior": "accept_sequence_reset_and_order_within_new_boot",
+  "expired_command_behavior": "reject_and_ack_expired",
+  "oversize_packet_behavior": "reject_before_schema_validation_and_audit",
   "ordering_key": ["device_id", "boot_id", "sequence"],
   "clock_policy": "persist_sent_at_and_server_received_at; order_by_sequence_within_boot"
 }
