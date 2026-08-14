@@ -6,7 +6,13 @@ import tseslint from 'typescript-eslint'
 
 export default [
   {
-    ignores: ['dist/**', 'coverage/**', 'playwright-report/**', 'test-results/**'],
+    ignores: [
+      'dist/**',
+      'coverage/**',
+      'playwright-report/**',
+      'test-results/**',
+      'src/shared/api/generated/**',
+    ],
   },
   js.configs.recommended,
   ...tseslint.configs.strict,

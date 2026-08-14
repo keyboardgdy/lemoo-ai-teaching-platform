@@ -28,6 +28,7 @@ class Settings(BaseSettings):
     postgres_user: str = "lemoo"
     postgres_password: str = Field(default="local-only-postgres-change-me", repr=False)
     postgres_db: str = "lemoo"
+    postgres_role: str = "lemoo_app"
     feature_content: bool = False
     feature_teaching: bool = False
     feature_ai: bool = False

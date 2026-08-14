@@ -104,7 +104,17 @@ tasks:
       - pnpm --filter {{.WEB_PACKAGE}} build
 
   frontend:verify:
-    deps: [frontend:lint, frontend:typecheck, frontend:test, frontend:build]
+    cmds:
+      - task: frontend:api:check
+      - task: frontend:lint
+      - task: frontend:typecheck
+      - task: frontend:test
+      - task: frontend:build
+
+  frontend:api:check:
+    cmds:
+      - pnpm --filter {{.WEB_PACKAGE}} api:generate
+      - git diff --exit-code -- apps/web/src/shared/api/generated
 
   docs:check:
     cmds:
@@ -121,10 +131,11 @@ tasks:
   schemas:check:
     cmds:
       - uv run --project {{.CLOUD_PROJECT}} python scripts/check_schemas.py
+      - uv run --project {{.CLOUD_PROJECT}} python scripts/export_openapi.py --check
 
   verify:
     desc: Execute all repository quality gates available for the current stage.
-    deps: [lint, typecheck, test, test:protocol, build, docs:check, repo:check, schemas:check, infra:config]
+    deps: [lint, typecheck, test, test:protocol, build, frontend:api:check, docs:check, repo:check, schemas:check, infra:config]
 
   test:integration:
     cmds:
@@ -148,6 +159,16 @@ tasks:
   migrate:
     cmds:
       - uv run --project {{.CLOUD_PROJECT}} alembic -c apps/cloud/alembic.ini upgrade head
+  database:setup:
+    desc: Migrate and provision the local NOBYPASSRLS application role.
+    cmds:
+      - task: migrate
+      - uv run --project {{.CLOUD_PROJECT}} python scripts/setup_database_role.py
+  seed:
+    desc: Upsert the six fixed PILOT-001 synthetic devices.
+    cmds:
+      - task: database:setup
+      - uv run --project {{.CLOUD_PROJECT}} python scripts/seed_stage1a.py
   migrate:test:
     cmds:
       - uv run --project {{.CLOUD_PROJECT}} python scripts/test_migrations.py

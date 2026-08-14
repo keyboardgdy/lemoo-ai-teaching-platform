@@ -2,12 +2,13 @@
 
 from __future__ import annotations
 
+from collections.abc import AsyncGenerator
 from datetime import UTC, datetime, timedelta
 from typing import cast
 from uuid import UUID
 
 import pytest
-from httpx import ASGITransport, AsyncClient, Response
+from httpx import ASGITransport, AsyncClient
 
 from app.config import Settings
 from app.entrypoints.api import create_app
@@ -87,8 +88,10 @@ class FakeControlPlane:
         support_reason: str | None,
         cursor: str | None,
         limit: int,
+        request_id: UUID,
+        trace_id: str,
     ) -> DevicePage:
-        del cursor, limit, support_reason
+        del cursor, limit, support_reason, request_id, trace_id
         self.last_actor = actor
         organization_id = target_organization_id or actor.organization_id
         return DevicePage(
@@ -107,8 +110,10 @@ class FakeControlPlane:
         *,
         target_organization_id: UUID | None,
         support_reason: str | None,
+        request_id: UUID,
+        trace_id: str,
     ) -> DeviceView:
-        del support_reason
+        del support_reason, request_id, trace_id
         self.last_actor = actor
         device = self.devices.get(device_id)
         organization_id = target_organization_id or actor.organization_id
@@ -145,7 +150,7 @@ def control_plane() -> FakeControlPlane:
 
 
 @pytest.fixture
-async def client(control_plane: FakeControlPlane) -> AsyncClient:
+async def client(control_plane: FakeControlPlane) -> AsyncGenerator[AsyncClient]:
     application = create_app(Settings(environment="test"), control_plane=control_plane)
     transport = ASGITransport(app=application)
     async with AsyncClient(transport=transport, base_url="http://testserver") as http:
@@ -213,7 +218,7 @@ async def test_cross_tenant_and_unknown_devices_have_the_same_404_shape(
 @pytest.mark.asyncio
 async def test_command_requires_csrf_and_is_idempotent(client: AsyncClient) -> None:
     csrf_token = await authenticate(client)
-    body = {
+    body: dict[str, object] = {
         "device_id": str(DEVICE_A),
         "command_type": "refresh_shadow",
         "reason": "Refresh the synthetic device shadow",
@@ -249,7 +254,7 @@ async def test_reused_idempotency_key_with_different_request_is_conflict(
         "Idempotency-Key": str(IDEMPOTENCY_KEY),
         "X-CSRF-Token": csrf_token,
     }
-    base = {
+    base: dict[str, object] = {
         "device_id": str(DEVICE_A),
         "command_type": "refresh_shadow",
         "expires_at": (NOW + timedelta(minutes=2)).isoformat(),
@@ -297,3 +302,14 @@ def test_openapi_exposes_only_the_stage_1a_web_surface(
     }
     assert "/api/v1/ota-releases" not in schema["paths"]
     assert schema["info"]["description"].startswith("Stage 1A Simulator-only")
+    error_responses = [
+        response
+        for path in schema["paths"].values()
+        for operation in path.values()
+        for status, response in operation.get("responses", {}).items()
+        if int(status) >= 400
+    ]
+    assert error_responses
+    assert all(
+        set(response["content"]) == {"application/problem+json"} for response in error_responses
+    )
