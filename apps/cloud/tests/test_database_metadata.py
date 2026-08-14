@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import subprocess
+import sys
 from pathlib import Path
 
 from sqlalchemy import DateTime, UniqueConstraint
@@ -80,3 +82,18 @@ def test_initial_migration_enables_and_forces_rls_and_immutable_audit() -> None:
     assert "prevent_audit_mutation" in source
     assert "PARTITION BY RANGE (received_at)" in source
     assert "device_telemetry_default" in source
+
+
+def test_control_plane_loads_the_complete_model_registry_in_a_fresh_process() -> None:
+    command = (
+        "from app.infrastructure.database.control_plane import registered_metadata; "
+        f"assert {EXPECTED_TABLES!r} == set(registered_metadata.tables)"
+    )
+    completed = subprocess.run(  # noqa: S603 - fixed interpreter and source under test
+        [sys.executable, "-c", command],
+        cwd=Path(__file__).resolve().parents[3],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    assert completed.returncode == 0, completed.stderr
