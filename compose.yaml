@@ -68,30 +68,55 @@ services:
       - no-new-privileges:true
     networks: [core]
 
+  emqx-pki-init:
+    image: alpine:3.22.1
+    profiles: [core]
+    command:
+      - sh
+      - -ec
+      - |
+        cp /run/secrets/emqx_ca /target/ca-cert.pem
+        cp /run/secrets/emqx_server_cert /target/server-cert.pem
+        cp /run/secrets/emqx_server_key /target/server-key.pem
+        chown 1000:1000 /target/*.pem
+        chmod 0444 /target/ca-cert.pem /target/server-cert.pem
+        chmod 0400 /target/server-key.pem
+    secrets:
+      - emqx_ca
+      - emqx_server_cert
+      - emqx_server_key
+    volumes:
+      - emqx-pki:/target
+    network_mode: none
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    restart: "no"
+
   emqx:
     image: emqx/emqx:5.8.8
     profiles: [core]
+    depends_on:
+      emqx-pki-init:
+        condition: service_completed_successfully
     environment:
       EMQX_NODE_NAME: emqx@127.0.0.1
       EMQX_DASHBOARD__DEFAULT_USERNAME: ${LEMOO_EMQX_DASHBOARD_USER:?set LEMOO_EMQX_DASHBOARD_USER}
       EMQX_DASHBOARD__DEFAULT_PASSWORD: ${LEMOO_EMQX_DASHBOARD_PASSWORD:?set LEMOO_EMQX_DASHBOARD_PASSWORD}
       EMQX_ALLOW_ANONYMOUS: "false"
       EMQX_LISTENERS__SSL__DEFAULT__BIND: '"0.0.0.0:8883"'
-      EMQX_LISTENERS__SSL__DEFAULT__SSL_OPTIONS__CACERTFILE: '"/run/secrets/emqx_ca"'
-      EMQX_LISTENERS__SSL__DEFAULT__SSL_OPTIONS__CERTFILE: '"/run/secrets/emqx_server_cert"'
-      EMQX_LISTENERS__SSL__DEFAULT__SSL_OPTIONS__KEYFILE: '"/run/secrets/emqx_server_key"'
+      EMQX_LISTENERS__SSL__DEFAULT__SSL_OPTIONS__CACERTFILE: '"/opt/emqx/etc/lemoo-pki/ca-cert.pem"'
+      EMQX_LISTENERS__SSL__DEFAULT__SSL_OPTIONS__CERTFILE: '"/opt/emqx/etc/lemoo-pki/server-cert.pem"'
+      EMQX_LISTENERS__SSL__DEFAULT__SSL_OPTIONS__KEYFILE: '"/opt/emqx/etc/lemoo-pki/server-key.pem"'
       EMQX_LISTENERS__SSL__DEFAULT__SSL_OPTIONS__VERIFY: verify_peer
       EMQX_LISTENERS__SSL__DEFAULT__SSL_OPTIONS__FAIL_IF_NO_PEER_CERT: "true"
     ports:
       - "127.0.0.1:${LEMOO_EMQX_DASHBOARD_PORT:-58083}:18083"
       - "127.0.0.1:${LEMOO_EMQX_MQTT_TLS_PORT:-58883}:8883"
-    secrets:
-      - emqx_ca
-      - emqx_server_cert
-      - emqx_server_key
     volumes:
       - emqx-data:/opt/emqx/data
       - emqx-log:/opt/emqx/log
+      - emqx-pki:/opt/emqx/etc/lemoo-pki:ro
     healthcheck:
       test: [CMD, /opt/emqx/bin/emqx, ctl, status]
       interval: 10s
@@ -112,6 +137,7 @@ volumes:
   minio-data:
   emqx-data:
   emqx-log:
+  emqx-pki:
 
 secrets:
   emqx_ca:

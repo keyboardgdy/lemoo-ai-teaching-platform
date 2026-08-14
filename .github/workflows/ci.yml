@@ -108,6 +108,7 @@ jobs:
     timeout-minutes: 10
     env:
       LEMOO_ENVIRONMENT: ci
+      PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH: /usr/bin/google-chrome
     services:
       postgresql:
         image: postgres:18.3-alpine
@@ -143,7 +144,7 @@ jobs:
           version: 3.46.4
       - run: uv sync --project apps/cloud --locked
       - run: pnpm install --frozen-lockfile
-      - run: pnpm --filter @lemoo/web exec playwright install --with-deps chromium
+      - run: google-chrome --version
       - run: task test:e2e
 
   security:

@@ -16,9 +16,11 @@
   Uvicorn 选择原生事件循环。两条平台分支均有单元测试。
 - Control Plane 启动时加载完整 SQLAlchemy 模型注册表并 fail closed；独立 Python 进程
   回归测试防止测试收集顺序掩盖缺失外键目标。
-- CI 新增独立、失败即关闭的 `e2e` 结果；Linux 安装 Chromium 后运行同一
+- CI 新增独立、失败即关闭的 `e2e` 结果；Linux 使用 runner 预装 Chrome 运行同一
   `task test:e2e`。`compose` 结果从静态配置检查升级为真实四容器启动、健康等待和 EMQX
-  mTLS 正反 smoke，并在成功或失败后清理容器。
+  mTLS 正反 smoke，并在成功或失败后清理容器。短生命周期、无网络的 PKI init 容器
+  将 Compose secret 复制到仅 EMQX 用户可读的命名卷，避免 Linux bind-mounted secret
+  保留宿主 `0600` 所有权后令非 root EMQX 无法读取私钥。
 
 ## TDD 与失败证据
 
