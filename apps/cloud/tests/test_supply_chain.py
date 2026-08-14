@@ -4,9 +4,9 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+from typing import cast
 
 import pytest
-
 from scripts.supply_chain import (
     create_provenance,
     require_digest_reference,
@@ -54,11 +54,13 @@ def test_provenance_binds_commit_builder_and_immutable_subject() -> None:
     assert statement["_type"] == "https://in-toto.io/Statement/v1"
     assert statement["predicateType"] == "https://slsa.dev/provenance/v1"
     assert statement["subject"] == [{"name": "lemoo-api", "digest": {"sha256": digest}}]
-    predicate = statement["predicate"]
-    assert predicate["runDetails"]["builder"]["id"].startswith("https://github.com/")
-    assert predicate["buildDefinition"]["resolvedDependencies"][0]["digest"] == {
-        "gitCommit": "c" * 40
-    }
+    predicate = cast(dict[str, object], statement["predicate"])
+    run_details = cast(dict[str, object], predicate["runDetails"])
+    builder = cast(dict[str, str], run_details["builder"])
+    assert builder["id"].startswith("https://github.com/")
+    build_definition = cast(dict[str, object], predicate["buildDefinition"])
+    dependencies = cast(list[dict[str, object]], build_definition["resolvedDependencies"])
+    assert dependencies[0]["digest"] == {"gitCommit": "c" * 40}
 
 
 def test_hash_manifest_detects_artifact_tampering(tmp_path: Path) -> None:
