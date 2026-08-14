@@ -33,6 +33,20 @@ jobs:
   backend:
     name: backend
     runs-on: ubuntu-latest
+    services:
+      postgresql:
+        image: postgres:18.3-alpine
+        env:
+          POSTGRES_USER: lemoo
+          POSTGRES_PASSWORD: local-only-postgres-change-me
+          POSTGRES_DB: lemoo
+        ports:
+          - 54320:5432
+        options: >-
+          --health-cmd "pg_isready -U lemoo -d lemoo"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 12
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
       - uses: astral-sh/setup-uv@94527f2e458b27549849d47d273a16bec83a01e9 # v7
@@ -46,6 +60,7 @@ jobs:
       - run: uv lock --project apps/cloud --check
       - run: uv sync --project apps/cloud --locked
       - run: task backend:verify
+      - run: task migrate:test
 
   frontend:
     name: frontend

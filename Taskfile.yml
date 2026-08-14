@@ -127,14 +127,16 @@ tasks:
     deps: [lint, typecheck, test, test:protocol, build, docs:check, repo:check, schemas:check, infra:config]
 
   test:integration:
-    cmds: [{ cmd: 'uv run --project {{.CLOUD_PROJECT}} python scripts/gate_not_ready.py G2-Device integration-tests' }]
+    cmds:
+      - uv run --project {{.CLOUD_PROJECT}} python scripts/test_migrations.py
   test:protocol:
     cmds:
       - uv run --project {{.CLOUD_PROJECT}} pytest packages/protocol-schemas/tests -q
   test:e2e:
     cmds: [{ cmd: 'uv run --project {{.CLOUD_PROJECT}} python scripts/gate_not_ready.py Gate-3-Sim playwright-e2e' }]
   test:rls:
-    cmds: [{ cmd: 'uv run --project {{.CLOUD_PROJECT}} python scripts/gate_not_ready.py W6a rls-tests' }]
+    cmds:
+      - uv run --project {{.CLOUD_PROJECT}} python scripts/test_migrations.py
   test:ota:
     cmds: [{ cmd: 'uv run --project {{.CLOUD_PROJECT}} python scripts/gate_not_ready.py G2-OTA ota-tests' }]
   test:ai-actions:
@@ -144,9 +146,11 @@ tasks:
   ci:baseline:check:
     cmds: [{ cmd: 'uv run --project {{.CLOUD_PROJECT}} python scripts/gate_not_ready.py W7b4 full-ci-baseline' }]
   migrate:
-    cmds: [{ cmd: 'uv run --project {{.CLOUD_PROJECT}} python scripts/gate_not_ready.py W6a database-migrations' }]
+    cmds:
+      - uv run --project {{.CLOUD_PROJECT}} alembic -c apps/cloud/alembic.ini upgrade head
   migrate:test:
-    cmds: [{ cmd: 'uv run --project {{.CLOUD_PROJECT}} python scripts/gate_not_ready.py W7b2 migration-test' }]
+    cmds:
+      - uv run --project {{.CLOUD_PROJECT}} python scripts/test_migrations.py
   simulator:smoke:
     cmds: [{ cmd: 'uv run --project {{.CLOUD_PROJECT}} python scripts/gate_not_ready.py W8b simulator-smoke' }]
   image:verify:

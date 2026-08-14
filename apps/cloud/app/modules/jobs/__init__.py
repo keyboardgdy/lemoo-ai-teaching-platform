@@ -1,0 +1,1 @@
+"""Reliable outbox persistence module."""
