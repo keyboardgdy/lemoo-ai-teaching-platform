@@ -59,3 +59,7 @@ task test:protocol
 - 证书身份、Client ID、Topic Device ID 与 Payload Device ID 的四方一致性是后续 Broker/Gateway 实现必须遵守的契约；W5a 只冻结规则。
 - Content、Teaching、AI、Diagnostic、Bulk Command 和 OTA 均没有 Topic、命令或处理路径。
 - 本证据不是法律意见、合规认证、生产授权、真实设备兼容证明或真实机构试点批准。
+
+## 契约勘误
+
+2026-08-14 在数据库 Seed 设计前发现 Device ID Pattern 与 PILOT-001 六设备清单不一致；回归测试先复现后，将 MQTT/Device API 统一为仅允许 `SIM-A-001`～`004` 与 `SIM-B-001`～`002`，并拒绝 A-005、B-003 等范围外 ID。

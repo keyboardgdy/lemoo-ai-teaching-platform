@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import re
 from collections.abc import Iterator
 from pathlib import Path
 from typing import Any, cast
@@ -177,3 +178,25 @@ def test_unknown_topic_major_is_rejected(major: int) -> None:
     policy = load_json(MQTT / "compatibility.v1.json")
     assert major not in policy["accepted_topic_majors"]
     assert policy["unknown_major_behavior"] == "reject_and_audit"
+
+
+def test_device_id_patterns_match_exactly_the_six_pilot_devices() -> None:
+    expected = {
+        "SIM-A-001",
+        "SIM-A-002",
+        "SIM-A-003",
+        "SIM-A-004",
+        "SIM-B-001",
+        "SIM-B-002",
+    }
+    rejected = {"SIM-A-000", "SIM-A-005", "SIM-B-003", "SIM-C-001"}
+    mqtt_pattern = load_json(MQTT / "envelope.v1.schema.json")["properties"][
+        "device_id"
+    ]["pattern"]
+    device_api_pattern = load_json(ROOT / "device-api" / "openapi.v1.json")[
+        "components"
+    ]["schemas"]["DeviceId"]["pattern"]
+
+    for pattern in (mqtt_pattern, device_api_pattern):
+        assert all(re.fullmatch(pattern, device_id) for device_id in expected)
+        assert not any(re.fullmatch(pattern, device_id) for device_id in rejected)
