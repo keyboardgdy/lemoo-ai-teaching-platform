@@ -153,6 +153,26 @@ def test_topic_policy_freezes_qos_retain_session_and_size() -> None:
     assert policy["topics"]["command_ack"] == {"qos": 1, "retain": False}
 
 
+def test_duplicate_order_expiry_and_limit_outcomes_are_frozen() -> None:
+    compatibility = load_json(MQTT / "compatibility.v1.json")
+    limits = load_json(MQTT / "topic-policy.v1.json")["limits"]
+
+    assert compatibility["duplicate_behavior"] == (
+        "ack_without_reapplying_business_effect"
+    )
+    assert compatibility["out_of_order_behavior"] == (
+        "persist_observation_without_regressing_current_state"
+    )
+    assert compatibility["new_boot_behavior"] == (
+        "accept_sequence_reset_and_order_within_new_boot"
+    )
+    assert compatibility["expired_command_behavior"] == "reject_and_ack_expired"
+    assert compatibility["oversize_packet_behavior"] == (
+        "reject_before_schema_validation_and_audit"
+    )
+    assert limits["max_packet_bytes"] == 65536
+
+
 @pytest.mark.parametrize("major", [0, 2, 99])
 def test_unknown_topic_major_is_rejected(major: int) -> None:
     policy = load_json(MQTT / "compatibility.v1.json")
