@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "status": "frozen",
+  "scope": "stage-1a-simulator-first",
+  "production_supported": false,
+  "identity_source": "verified_x509_san_uri",
+  "san_uri_template": "spiffe://sim.lemoo.invalid/devices/{device_id}",
+  "trusted_test_issuer": "CN=Lemoo Stage1A Simulator Device CA",
+  "path_identity_must_match": true,
+  "client_supplied_identity_headers": "ignore_and_audit",
+  "test_ca": {
+    "generated_at_runtime": true,
+    "private_keys_tracked": false,
+    "production_trust_allowed": false
+  },
+  "binding": {
+    "code_ttl_seconds": 300,
+    "one_time": true,
+    "max_attempts": 5,
+    "binds": ["serial_number", "organization_id", "site_id"],
+    "audit_required": true
+  },
+  "rotation": {
+    "requires_current_certificate": true,
+    "csr_san_must_match_current_device": true,
+    "overlap_seconds": 300,
+    "private_key_must_remain_on_device": true
+  },
+  "revocation": {
+    "deny_statuses": ["revoked", "suspended"],
+    "unknown_status_behavior": "deny_and_audit",
+    "cache_failure_behavior": "deny_and_audit"
+  }
+}

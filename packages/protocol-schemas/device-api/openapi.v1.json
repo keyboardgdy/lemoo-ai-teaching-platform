@@ -1,0 +1,503 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Lemoo Stage 1A Device API",
+    "version": "1.0.0",
+    "description": "Simulator-first mTLS device contract. Not a production or physical-device compatibility claim."
+  },
+  "x-lemoo": {
+    "status": "frozen",
+    "scope": "stage-1a-simulator-first",
+    "production_supported": false
+  },
+  "servers": [
+    {
+      "url": "https://device-api.sim.lemoo.invalid/device-api/v1"
+    }
+  ],
+  "security": [
+    {
+      "DeviceMtls": []
+    }
+  ],
+  "paths": {
+    "/provision/enrollments": {
+      "post": {
+        "operationId": "createProvisionEnrollment",
+        "summary": "Enroll one pre-inventoried simulator using a CSR",
+        "security": [
+          {
+            "ProvisioningMtls": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EnrollmentRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Synthetic certificate issued",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnrollmentResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "$ref": "#/components/responses/Problem"
+          }
+        }
+      }
+    },
+    "/devices/{device_id}/bindings:consume": {
+      "post": {
+        "operationId": "consumeBindingCode",
+        "summary": "Consume a short-lived one-time binding code",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/DeviceId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BindingRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Device bound",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BindingResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "$ref": "#/components/responses/Problem"
+          }
+        }
+      }
+    },
+    "/devices/{device_id}/certificates:rotate": {
+      "post": {
+        "operationId": "rotateDeviceCertificate",
+        "summary": "Rotate the current synthetic device certificate using a CSR",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/DeviceId"
+          },
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RotationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Replacement certificate issued with bounded overlap",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EnrollmentResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "$ref": "#/components/responses/Problem"
+          }
+        }
+      }
+    },
+    "/devices/{device_id}/certificate-status": {
+      "get": {
+        "operationId": "getDeviceCertificateStatus",
+        "summary": "Read the current certificate status and rotation deadline",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/DeviceId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Certificate state",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CertificateStatus"
+                }
+              }
+            }
+          },
+          "default": {
+            "$ref": "#/components/responses/Problem"
+          }
+        }
+      }
+    },
+    "/devices/{device_id}/time": {
+      "get": {
+        "operationId": "getDeviceServerTime",
+        "summary": "Read authoritative server UTC for simulator drift handling",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/DeviceId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Server time",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TimeResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "$ref": "#/components/responses/Problem"
+          }
+        }
+      }
+    },
+    "/devices/{device_id}/transfers:upload-url": {
+      "post": {
+        "operationId": "requestDeviceUploadUrl",
+        "summary": "Reserved transfer contract; disabled in Stage 1A",
+        "x-lemoo-stage-1a-enabled": false,
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/DeviceId"
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/TransferRequest"
+        },
+        "responses": {
+          "403": {
+            "$ref": "#/components/responses/CapabilityNotEnabled"
+          }
+        }
+      }
+    },
+    "/devices/{device_id}/transfers:download-url": {
+      "post": {
+        "operationId": "requestDeviceDownloadUrl",
+        "summary": "Reserved transfer contract; disabled in Stage 1A",
+        "x-lemoo-stage-1a-enabled": false,
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/DeviceId"
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/TransferRequest"
+        },
+        "responses": {
+          "403": {
+            "$ref": "#/components/responses/CapabilityNotEnabled"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "DeviceMtls": {
+        "type": "mutualTLS",
+        "description": "Per-device X.509 certificate; identity comes from verified SAN URI."
+      },
+      "ProvisioningMtls": {
+        "type": "mutualTLS",
+        "description": "Simulator bootstrap certificate; never accepted as a Web session."
+      }
+    },
+    "parameters": {
+      "DeviceId": {
+        "name": "device_id",
+        "in": "path",
+        "required": true,
+        "description": "Must equal the device identity derived from verified mTLS SAN.",
+        "schema": {
+          "$ref": "#/components/schemas/DeviceId"
+        }
+      },
+      "IdempotencyKey": {
+        "name": "Idempotency-Key",
+        "in": "header",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
+      }
+    },
+    "requestBodies": {
+      "TransferRequest": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/TransferRequest"
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "Problem": {
+        "description": "Fail-closed error",
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/schemas/Problem"
+            }
+          }
+        }
+      },
+      "CapabilityNotEnabled": {
+        "description": "Transfer purpose is not enabled in Stage 1A",
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/schemas/Problem"
+            },
+            "example": {
+              "type": "https://errors.lemoo.invalid/capability-not-enabled",
+              "title": "Capability not enabled",
+              "status": 403,
+              "code": "capability_not_enabled",
+              "request_id": "0198f001-4000-7000-8000-000000000001"
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "DeviceId": {
+        "type": "string",
+        "pattern": "^SIM-[AB]-00[1-4]$"
+      },
+      "EnrollmentRequest": {
+        "type": "object",
+        "required": ["device_id", "serial_number", "csr_pem", "is_physical_hardware"],
+        "properties": {
+          "device_id": {
+            "$ref": "#/components/schemas/DeviceId"
+          },
+          "serial_number": {
+            "type": "string",
+            "pattern": "^LEMO-SIM-[AB]-00[1-4]$"
+          },
+          "csr_pem": {
+            "type": "string",
+            "minLength": 64,
+            "maxLength": 8192
+          },
+          "is_physical_hardware": {
+            "const": false
+          }
+        },
+        "additionalProperties": false
+      },
+      "EnrollmentResponse": {
+        "type": "object",
+        "required": ["device_id", "certificate_pem", "chain_pem", "not_after", "production_supported"],
+        "properties": {
+          "device_id": {
+            "$ref": "#/components/schemas/DeviceId"
+          },
+          "certificate_pem": {
+            "type": "string"
+          },
+          "chain_pem": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1,
+            "maxItems": 2
+          },
+          "not_after": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "production_supported": {
+            "const": false
+          }
+        },
+        "additionalProperties": false
+      },
+      "BindingRequest": {
+        "type": "object",
+        "required": ["binding_code", "serial_number", "attestation"],
+        "properties": {
+          "binding_code": {
+            "type": "string",
+            "pattern": "^[A-Z2-9]{8}$"
+          },
+          "serial_number": {
+            "type": "string",
+            "pattern": "^LEMO-SIM-[AB]-00[1-4]$"
+          },
+          "attestation": {
+            "const": "simulator-declaration-v1"
+          }
+        },
+        "additionalProperties": false
+      },
+      "BindingResponse": {
+        "type": "object",
+        "required": ["device_id", "organization_id", "site_id", "state", "production_supported"],
+        "properties": {
+          "device_id": {
+            "$ref": "#/components/schemas/DeviceId"
+          },
+          "organization_id": {
+            "type": "string",
+            "pattern": "^ORG-SIM-[AB]$"
+          },
+          "site_id": {
+            "type": "string",
+            "pattern": "^SITE-SIM-[AB]-01$"
+          },
+          "state": {
+            "const": "assigned"
+          },
+          "production_supported": {
+            "const": false
+          }
+        },
+        "additionalProperties": false
+      },
+      "RotationRequest": {
+        "type": "object",
+        "required": ["csr_pem", "reason"],
+        "properties": {
+          "csr_pem": {
+            "type": "string",
+            "minLength": 64,
+            "maxLength": 8192
+          },
+          "reason": {
+            "enum": ["scheduled", "expiring", "suspected_compromise"]
+          }
+        },
+        "additionalProperties": false
+      },
+      "CertificateStatus": {
+        "type": "object",
+        "required": ["device_id", "status", "not_after", "rotate_before"],
+        "properties": {
+          "device_id": {
+            "$ref": "#/components/schemas/DeviceId"
+          },
+          "status": {
+            "enum": ["active", "suspended", "revoked", "expired"]
+          },
+          "not_after": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "rotate_before": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "revocation_reason": {
+            "type": ["string", "null"],
+            "maxLength": 120
+          }
+        },
+        "additionalProperties": false
+      },
+      "TimeResponse": {
+        "type": "object",
+        "required": ["server_time", "max_accepted_drift_seconds"],
+        "properties": {
+          "server_time": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "max_accepted_drift_seconds": {
+            "const": 300
+          }
+        },
+        "additionalProperties": false
+      },
+      "TransferRequest": {
+        "type": "object",
+        "required": ["purpose", "object_ref", "content_length", "sha256"],
+        "properties": {
+          "purpose": {
+            "enum": ["content", "diagnostics", "firmware", "student_audio"]
+          },
+          "object_ref": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "content_length": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 1048576
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Problem": {
+        "type": "object",
+        "required": ["type", "title", "status", "code", "request_id"],
+        "properties": {
+          "type": {
+            "type": "string",
+            "format": "uri"
+          },
+          "title": {
+            "type": "string"
+          },
+          "status": {
+            "type": "integer",
+            "minimum": 400,
+            "maximum": 599
+          },
+          "code": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]+$"
+          },
+          "request_id": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  }
+}
