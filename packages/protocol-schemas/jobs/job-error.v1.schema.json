@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.lemoo.dev/jobs/job-error.v1.schema.json",
+  "title": "Stage 1A Job error v1",
+  "x-lemoo": {
+    "status": "frozen",
+    "scope": "stage-1a-simulator-first",
+    "production_supported": false
+  },
+  "type": "object",
+  "required": ["schema", "job_id", "category", "retryable", "code", "safe_message", "observed_at"],
+  "properties": {
+    "schema": { "const": "lemoo.job.error.v1" },
+    "job_id": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+    },
+    "category": {
+      "enum": ["authorization", "cancelled", "conflict", "dependency_permanent", "dependency_transient", "timeout", "unknown_job_type", "validation"]
+    },
+    "retryable": { "type": "boolean" },
+    "code": { "type": "string", "pattern": "^[a-z][a-z0-9_]+$", "maxLength": 80 },
+    "safe_message": { "type": "string", "minLength": 3, "maxLength": 240 },
+    "observed_at": { "type": "string", "format": "date-time" }
+  },
+  "additionalProperties": false
+}

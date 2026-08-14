@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "status": "frozen",
+  "command_type": "refresh_shadow",
+  "transitions": {
+    "created": ["approved", "cancelled", "expired"],
+    "approved": ["published", "cancelled", "expired"],
+    "published": ["accepted", "expired", "timed_out"],
+    "accepted": ["running", "failed", "timed_out"],
+    "running": ["succeeded", "failed", "timed_out"],
+    "succeeded": [],
+    "failed": [],
+    "timed_out": [],
+    "expired": [],
+    "cancelled": []
+  },
+  "same_state_behavior": "idempotent_noop",
+  "illegal_transition_behavior": "reject_and_audit",
+  "late_ack_after_terminal_behavior": "record_observation_without_state_regression",
+  "expiry_clock": "server_received_at",
+  "device_revalidation_required": true
+}

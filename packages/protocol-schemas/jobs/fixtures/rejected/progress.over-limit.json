@@ -1,0 +1,14 @@
+{
+  "contract": "job-progress",
+  "expected_error_contains": "greater than the maximum",
+  "message": {
+    "schema": "lemoo.job.progress.v1",
+    "job_id": "0198f001-5000-7000-8000-000000000001",
+    "organization_id": "ORG-SIM-A",
+    "state": "running",
+    "progress_percent": 101,
+    "attempt": 1,
+    "observed_at": "2026-08-14T01:00:05Z",
+    "production_supported": false
+  }
+}

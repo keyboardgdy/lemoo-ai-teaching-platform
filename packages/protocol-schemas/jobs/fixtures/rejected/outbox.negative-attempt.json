@@ -1,0 +1,19 @@
+{
+  "contract": "outbox-event",
+  "expected_error_contains": "less than the minimum",
+  "message": {
+    "schema": "lemoo.outbox.event.v1",
+    "event_id": "0198f001-5300-7000-8000-000000000001",
+    "event_type": "device.command.created",
+    "schema_version": 1,
+    "aggregate_type": "device_command",
+    "aggregate_id": "0198f001-5100-7000-8000-000000000001",
+    "organization_id": "ORG-SIM-A",
+    "occurred_at": "2026-08-14T01:00:00Z",
+    "available_at": "2026-08-14T01:00:00Z",
+    "attempt_count": -1,
+    "state": "pending",
+    "payload": {},
+    "production_supported": false
+  }
+}

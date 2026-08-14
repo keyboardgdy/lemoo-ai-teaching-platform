@@ -1,0 +1,23 @@
+{
+  "contract": "job-envelope",
+  "expected_error_contains": "Additional properties",
+  "message": {
+    "schema": "lemoo.job.envelope.v1",
+    "job_type": "device.command.dispatch",
+    "schema_version": 1,
+    "job_id": "0198f001-5000-7000-8000-000000000021",
+    "organization_id": "ORG-SIM-A",
+    "aggregate_id": "0198f001-5100-7000-8000-000000000021",
+    "requested_by": "SYSTEM",
+    "idempotency_key": "0198f001-5200-7000-8000-000000000021",
+    "created_at": "2026-08-14T01:00:00Z",
+    "deadline_at": "2026-08-14T01:00:15Z",
+    "attempt": 1,
+    "production_supported": false,
+    "payload": {
+      "command_id": "0198f001-5100-7000-8000-000000000021",
+      "device_id": "SIM-A-001",
+      "shell": "disabled"
+    }
+  }
+}
