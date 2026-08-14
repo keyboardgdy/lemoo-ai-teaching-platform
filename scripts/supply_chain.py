@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import argparse
 import hashlib
 import json
 import os
@@ -9,6 +10,7 @@ import re
 import shutil
 import subprocess
 import sys
+import tempfile
 from dataclasses import dataclass
 from pathlib import Path
 from typing import cast
@@ -85,6 +87,214 @@ def verify_hash_manifest(manifest_path: Path, artifact_root: Path) -> None:
         observed = sha256_file(artifact)
         if observed != expected:
             raise ValueError(f"artifact digest mismatch: {relative_name}")
+
+
+def _read_json_object(path: Path) -> dict[str, object]:
+    raw = cast(object, json.loads(path.read_text(encoding="utf-8")))
+    if not isinstance(raw, dict):
+        raise TypeError(f"JSON artifact must be an object: {path.name}")
+    return cast(dict[str, object], raw)
+
+
+def _load_report(output: Path) -> dict[str, object]:
+    report_path = output / "verification-report.json"
+    if not report_path.is_file():
+        raise FileNotFoundError(f"missing supply-chain report: {report_path}")
+    report = _read_json_object(report_path)
+    if report.get("schema_version") != 1:
+        raise RuntimeError("unsupported supply-chain report schema")
+    return report
+
+
+def _report_images(report: dict[str, object]) -> list[dict[str, object]]:
+    raw_images = report.get("images")
+    if not isinstance(raw_images, list):
+        raise TypeError("supply-chain report images must be a list")
+    images: list[dict[str, object]] = []
+    for raw_image in cast(list[object], raw_images):
+        if not isinstance(raw_image, dict):
+            raise TypeError("supply-chain report image entry must be an object")
+        images.append(cast(dict[str, object], raw_image))
+    return images
+
+
+def verify_immutable_evidence(output: Path) -> None:
+    """Independently validate immutable image references and artifact hashes."""
+
+    report = _load_report(output)
+    if report.get("scope") != "Stage 1A Simulator-only non-production":
+        raise RuntimeError("supply-chain scope mismatch")
+    if report.get("production_authorized") is not False:
+        raise RuntimeError("supply-chain evidence must not authorize production")
+    revision = report.get("revision")
+    if not isinstance(revision, str) or re.fullmatch(r"[a-f0-9]{40}", revision) is None:
+        raise RuntimeError("supply-chain revision must be a full Git commit")
+
+    expected_specs = {spec.name: spec for spec in IMAGES}
+    observed_names: set[str] = set()
+    expected_hashed_artifacts: set[str] = set()
+    for image in _report_images(report):
+        reference = image.get("reference")
+        digest = image.get("digest")
+        archive = image.get("archive")
+        user = image.get("user")
+        if not isinstance(reference, str):
+            raise TypeError("image reference must be a string")
+        digest_body = require_digest_reference(reference)
+        name = reference.split("@", maxsplit=1)[0]
+        if name not in expected_specs or name in observed_names:
+            raise RuntimeError(f"unexpected or duplicate image evidence: {name}")
+        observed_names.add(name)
+        if digest != f"sha256:{digest_body}":
+            raise RuntimeError(f"image digest mismatch: {name}")
+        if archive != f"{name}.image.tar":
+            raise RuntimeError(f"image archive name mismatch: {name}")
+        if not isinstance(user, str) or user in {
+            "",
+            "0",
+            "root",
+            "0:0",
+            "root:root",
+        }:
+            raise RuntimeError(f"image runtime user is not non-root: {name}")
+        expected_hashed_artifacts.update(
+            {
+                f"{name}.image.tar",
+                f"{name}.cdx.json",
+                f"{name}.trivy.json",
+                f"{name}.provenance.json",
+            }
+        )
+    if observed_names != set(expected_specs):
+        raise RuntimeError(
+            "supply-chain evidence does not contain both expected images"
+        )
+
+    manifest_path = output / "artifact-hashes.json"
+    manifest = _read_json_object(manifest_path)
+    if set(manifest) != expected_hashed_artifacts:
+        raise RuntimeError("artifact hash manifest inventory mismatch")
+    verify_hash_manifest(manifest_path, output)
+
+
+def verify_sbom_evidence(output: Path) -> None:
+    """Independently validate both CycloneDX component inventories."""
+
+    _load_report(output)
+    for spec in IMAGES:
+        sbom = _read_json_object(output / f"{spec.name}.cdx.json")
+        if sbom.get("bomFormat") != "CycloneDX":
+            raise RuntimeError(f"SBOM is not CycloneDX: {spec.name}")
+        if not isinstance(sbom.get("specVersion"), str):
+            raise TypeError(f"CycloneDX spec version is missing: {spec.name}")
+        components = sbom.get("components")
+        if not isinstance(components, list) or not components:
+            raise RuntimeError(f"CycloneDX component inventory is empty: {spec.name}")
+
+
+def verify_scan_evidence(output: Path) -> None:
+    """Independently reject any fixed HIGH/CRITICAL result in Trivy JSON."""
+
+    _load_report(output)
+    blocked: list[str] = []
+    for spec in IMAGES:
+        scan = _read_json_object(output / f"{spec.name}.trivy.json")
+        if not isinstance(scan.get("SchemaVersion"), int):
+            raise TypeError(f"Trivy schema version is missing: {spec.name}")
+        results = scan.get("Results")
+        if not isinstance(results, list) or not results:
+            raise RuntimeError(f"Trivy result inventory is empty: {spec.name}")
+        for raw_result in cast(list[object], results):
+            if not isinstance(raw_result, dict):
+                raise TypeError(f"invalid Trivy result entry: {spec.name}")
+            vulnerabilities = cast(dict[object, object], raw_result).get(
+                "Vulnerabilities"
+            )
+            if vulnerabilities is None:
+                continue
+            if not isinstance(vulnerabilities, list):
+                raise TypeError(f"invalid Trivy vulnerability inventory: {spec.name}")
+            for raw_vulnerability in cast(list[object], vulnerabilities):
+                if not isinstance(raw_vulnerability, dict):
+                    raise TypeError(f"invalid Trivy vulnerability entry: {spec.name}")
+                vulnerability = cast(dict[object, object], raw_vulnerability)
+                severity = vulnerability.get("Severity")
+                if severity in {"HIGH", "CRITICAL"}:
+                    identifier = vulnerability.get("VulnerabilityID", "unknown")
+                    blocked.append(f"{spec.name}:{identifier}:{severity}")
+    if blocked:
+        raise RuntimeError(
+            "Trivy evidence contains HIGH/CRITICAL vulnerabilities: "
+            + ", ".join(blocked)
+        )
+
+
+def verify_provenance_evidence(output: Path) -> None:
+    """Independently bind SLSA v1 provenance to images, source, and bases."""
+
+    report = _load_report(output)
+    revision = report.get("revision")
+    if not isinstance(revision, str):
+        raise TypeError("supply-chain revision must be a string")
+    images: dict[str, dict[str, object]] = {}
+    for image in _report_images(report):
+        reference = image.get("reference")
+        if not isinstance(reference, str):
+            raise TypeError("image reference must be a string")
+        images[reference.split("@", maxsplit=1)[0]] = image
+
+    for spec in IMAGES:
+        statement = _read_json_object(output / f"{spec.name}.provenance.json")
+        if statement.get("_type") != "https://in-toto.io/Statement/v1":
+            raise RuntimeError(f"invalid in-toto statement: {spec.name}")
+        if statement.get("predicateType") != "https://slsa.dev/provenance/v1":
+            raise RuntimeError(f"invalid SLSA predicate: {spec.name}")
+        image = images.get(spec.name)
+        if image is None:
+            raise RuntimeError(f"missing report image: {spec.name}")
+        digest = image.get("digest")
+        if not isinstance(digest, str) or not digest.startswith("sha256:"):
+            raise RuntimeError(f"invalid report digest: {spec.name}")
+        expected_subject = [
+            {"name": spec.name, "digest": {"sha256": digest.removeprefix("sha256:")}}
+        ]
+        if statement.get("subject") != expected_subject:
+            raise RuntimeError(f"provenance subject mismatch: {spec.name}")
+
+        predicate = statement.get("predicate")
+        if not isinstance(predicate, dict):
+            raise TypeError(f"provenance predicate is missing: {spec.name}")
+        build_definition = cast(dict[object, object], predicate).get("buildDefinition")
+        if not isinstance(build_definition, dict):
+            raise TypeError(f"provenance build definition is missing: {spec.name}")
+        build_fields = cast(dict[object, object], build_definition)
+        external_parameters = build_fields.get("externalParameters")
+        if (
+            not isinstance(external_parameters, dict)
+            or cast(dict[object, object], external_parameters).get("dockerfile")
+            != spec.dockerfile
+        ):
+            raise RuntimeError(f"provenance Dockerfile mismatch: {spec.name}")
+        dependencies = build_fields.get("resolvedDependencies")
+        if not isinstance(dependencies, list):
+            raise TypeError(f"provenance dependencies are missing: {spec.name}")
+        expected_dependencies = create_provenance(
+            image_name=spec.name,
+            image_digest=digest,
+            revision=revision,
+            dockerfile=spec.dockerfile,
+            builder_id="validation-only",
+            invocation_id="validation-only",
+            base_references=spec.base_references,
+        )["predicate"]
+        expected_build = cast(dict[str, object], expected_dependencies)[
+            "buildDefinition"
+        ]
+        expected_resolved = cast(dict[str, object], expected_build)[
+            "resolvedDependencies"
+        ]
+        if dependencies != expected_resolved:
+            raise RuntimeError(f"provenance dependency mismatch: {spec.name}")
 
 
 def create_provenance(
@@ -480,6 +690,168 @@ def _sign_and_verify(
         signing_config.unlink(missing_ok=True)
 
 
+def verify_signature_evidence(output: Path) -> None:
+    """Independently verify all Cosign bundles and both negative controls."""
+
+    report = _load_report(output)
+    signer = report.get("signer")
+    if not isinstance(signer, dict):
+        raise TypeError("signer evidence is missing")
+    signer_fields = cast(dict[object, object], signer)
+    if signer_fields.get("type") != "ephemeral in-run Cosign test identity":
+        raise RuntimeError("unexpected signing identity type")
+    if signer_fields.get("private_key_retention") != "destroyed before gate completion":
+        raise RuntimeError("private key destruction was not asserted")
+    public_key_name = signer_fields.get("public_key")
+    wrong_public_key_name = signer_fields.get("wrong_public_key")
+    if (
+        not isinstance(public_key_name, str)
+        or public_key_name != "ephemeral-test-signer.pub"
+    ):
+        raise RuntimeError("unexpected signer public key")
+    if (
+        not isinstance(wrong_public_key_name, str)
+        or wrong_public_key_name != "ephemeral-wrong-signer.pub"
+    ):
+        raise RuntimeError("unexpected negative-control public key")
+    public_key = output / public_key_name
+    wrong_public_key = output / wrong_public_key_name
+    if not public_key.is_file() or not wrong_public_key.is_file():
+        raise FileNotFoundError("signing public-key evidence is missing")
+    if any(output.glob("*.key")):
+        raise RuntimeError("private signing key is present in evidence")
+
+    verification = report.get("verification")
+    if not isinstance(verification, dict):
+        raise TypeError("signature verification evidence is missing")
+    verification_fields = cast(dict[object, object], verification)
+    for negative_control in (
+        "tampered_artifact_rejected",
+        "wrong_signer_rejected",
+        "mutable_reference_rejected",
+    ):
+        if verification_fields.get(negative_control) is not True:
+            raise RuntimeError(f"negative control did not pass: {negative_control}")
+    raw_bundles = verification_fields.get("bundles")
+    if not isinstance(raw_bundles, dict):
+        raise TypeError("signature bundle inventory is missing")
+    bundles = cast(dict[object, object], raw_bundles)
+    expected_artifacts = {
+        f"{spec.name}.{suffix}"
+        for spec in IMAGES
+        for suffix in (
+            "image.tar",
+            "cdx.json",
+            "trivy.json",
+            "provenance.json",
+        )
+    } | {"artifact-hashes.json"}
+    if set(bundles) != expected_artifacts:
+        raise RuntimeError("signature bundle inventory mismatch")
+
+    cosign = _tool("cosign", "LEMOO_COSIGN_PATH", "cosign-windows-amd64.exe")
+    environment = _cosign_environment()
+
+    def verify_bundle(artifact: Path, bundle: Path, key: Path) -> None:
+        if not artifact.is_file() or not bundle.is_file():
+            raise FileNotFoundError(
+                f"signed artifact or bundle is missing: {artifact.name}"
+            )
+        _run(
+            [
+                cosign,
+                "verify-blob",
+                "--insecure-ignore-tlog",
+                "--key",
+                str(key),
+                "--bundle",
+                str(bundle),
+                str(artifact),
+            ],
+            environment=environment,
+        )
+
+    for raw_artifact_name, raw_bundle_name in bundles.items():
+        if not isinstance(raw_artifact_name, str) or not isinstance(
+            raw_bundle_name, str
+        ):
+            raise TypeError("signature bundle entries must be strings")
+        verify_bundle(
+            output / raw_artifact_name,
+            output / raw_bundle_name,
+            public_key,
+        )
+    verify_bundle(
+        output / "verification-report.json",
+        output / "verification-report.json.sigstore.json",
+        public_key,
+    )
+
+    first_artifact_name = min(expected_artifacts)
+    first_artifact = output / first_artifact_name
+    first_bundle_name = bundles[first_artifact_name]
+    if not isinstance(first_bundle_name, str):
+        raise TypeError("negative-control signature bundle name must be a string")
+    first_bundle = output / first_bundle_name
+    temporary_path: Path | None = None
+    try:
+        with tempfile.NamedTemporaryFile(
+            dir=output,
+            prefix=".negative-tampered-",
+            delete=False,
+        ) as temporary:
+            temporary_path = Path(temporary.name)
+        shutil.copyfile(first_artifact, temporary_path)
+        with temporary_path.open("ab") as stream:
+            stream.write(b"tampered")
+        _expect_failure(
+            [
+                cosign,
+                "verify-blob",
+                "--insecure-ignore-tlog",
+                "--key",
+                str(public_key),
+                "--bundle",
+                str(first_bundle),
+                str(temporary_path),
+            ],
+            environment=environment,
+        )
+    finally:
+        if temporary_path is not None:
+            temporary_path.unlink(missing_ok=True)
+    _expect_failure(
+        [
+            cosign,
+            "verify-blob",
+            "--insecure-ignore-tlog",
+            "--key",
+            str(wrong_public_key),
+            "--bundle",
+            str(first_bundle),
+            str(first_artifact),
+        ],
+        environment=environment,
+    )
+
+
+def verify_evidence(control: str, output: Path = DEFAULT_OUTPUT) -> None:
+    """Run one stable, independent supply-chain CI control."""
+
+    controls = {
+        "immutable": verify_immutable_evidence,
+        "sbom": verify_sbom_evidence,
+        "scan": verify_scan_evidence,
+        "provenance": verify_provenance_evidence,
+        "signature": verify_signature_evidence,
+    }
+    validator = controls.get(control)
+    if validator is None:
+        raise ValueError(f"unknown supply-chain control: {control}")
+    validator(output.resolve())
+    print(f"supply_chain_control={control} result=pass")
+
+
 def verify_supply_chain(output_path: Path = DEFAULT_OUTPUT) -> Path:
     """Build, inventory, scan, sign, and negatively verify both Stage 1A images."""
 
@@ -559,16 +931,40 @@ def verify_supply_chain(output_path: Path = DEFAULT_OUTPUT) -> Path:
 
 
 def main() -> None:
-    if len(sys.argv) != 1:
-        raise SystemExit("usage: python scripts/supply_chain.py")
-    verify_supply_chain()
+    if len(sys.argv) == 1:
+        verify_supply_chain()
+        return
+    parser = argparse.ArgumentParser(
+        description="Generate or independently validate Stage 1A supply-chain evidence."
+    )
+    subparsers = parser.add_subparsers(dest="command", required=True)
+    generate = subparsers.add_parser("generate")
+    generate.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
+    check = subparsers.add_parser("check")
+    check.add_argument(
+        "control",
+        choices=("immutable", "sbom", "scan", "provenance", "signature"),
+    )
+    check.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
+    arguments = parser.parse_args()
+    if arguments.command == "generate":
+        verify_supply_chain(cast(Path, arguments.output))
+        return
+    verify_evidence(cast(str, arguments.control), cast(Path, arguments.output))
 
 
 __all__ = [
+    "IMAGES",
     "create_provenance",
     "require_digest_reference",
     "sha256_file",
+    "verify_evidence",
     "verify_hash_manifest",
+    "verify_immutable_evidence",
+    "verify_provenance_evidence",
+    "verify_sbom_evidence",
+    "verify_scan_evidence",
+    "verify_signature_evidence",
     "verify_supply_chain",
 ]
 

@@ -195,8 +195,12 @@ tasks:
     cmds:
       - uv run --project {{.CLOUD_PROJECT}} pip-audit
       - pnpm audit --audit-level high --prod
+  image:evidence:
+    desc: Generate signed Stage 1A image, SBOM, scan, and provenance evidence.
+    cmds:
+      - uv run --project {{.CLOUD_PROJECT}} python scripts/supply_chain.py generate
   image:verify:
     desc: Build, scan, inventory, attest, sign, and negatively verify Stage 1A images.
     cmds:
       - task: supply-chain:audit
-      - uv run --project {{.CLOUD_PROJECT}} python scripts/supply_chain.py
+      - task: image:evidence
